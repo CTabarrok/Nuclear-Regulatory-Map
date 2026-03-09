@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Nuclear Uprate &amp; Pipeline Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,700;1,8..60,400&family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--ink:#1A1A1A;--paper:#FDFCF9;--news:#F5F2E8;--warm:#9C9788;--blue:#2B4B6F;--red:#8B2B2B;--yellow:#C4A035;--green:#3D5C3D;--g90:#2D2D2D;--g70:#5C5C5C;--g50:#8A8A8A;--g30:#B8B8B8;--g15:#DCDCDC;--serif:'Source Serif 4','Charter','Georgia',serif;--mono:'IBM Plex Mono','Consolas',monospace}
+body{background:var(--news);color:var(--ink);font-family:var(--serif);min-height:100vh}
+.b{padding:3px 10px;font-size:11px;border-radius:0;cursor:pointer;font-family:var(--mono);letter-spacing:.02em;transition:all .12s;display:inline-block}
+.bo{font-weight:700;border:2px solid var(--ink);background:var(--ink);color:var(--paper)}
+.bf{font-weight:400;border:1px solid var(--g30);background:transparent;color:var(--g70)}
+.b:hover{opacity:.85}
+.lb{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--warm)}
+.sv{font-size:20px;font-weight:700;font-family:var(--mono)}
+.si{display:flex;align-items:center;gap:8px;padding:6px 8px;cursor:pointer;border-bottom:1px solid var(--g15);transition:background .1s}
+.si:hover{background:var(--news)}
+@keyframes pu{0%,100%{opacity:.4}50%{opacity:1}}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.tt{animation:fi .15s ease-out}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/d3-geo/3.1.0/d3-geo.min.js"></script>
+<script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/topojson-client/3.1.0/topojson-client.min.js"></script>
+<script>
+var e=React.createElement,uS=React.useState,uE=React.useEffect,uM=React.useMemo,uC=React.useCallback,uR=React.useRef;
+
+var UP=[
+{n:"Farley 1",s:"AL",t:"PWR",lp:"W 3-Loop",ref:2775,up:.063,cap:.2,add:358,lat:31.22,lon:-85.11,mk:"Reg."},
+{n:"Farley 2",s:"AL",t:"PWR",lp:"W 3-Loop",ref:2775,up:.063,cap:.2,add:358,lat:31.22,lon:-85.11,mk:"Reg."},
+{n:"Browns Ferry 1",s:"AL",t:"BWR",lp:"GE BWR/4",ref:3952,up:.2,cap:.2,add:0,lat:34.7,lon:-87.12,mk:"Reg."},
+{n:"Browns Ferry 2",s:"AL",t:"BWR",lp:"GE BWR/4",ref:3952,up:.198,cap:.2,add:0,lat:34.7,lon:-87.12,mk:"Reg."},
+{n:"Browns Ferry 3",s:"AL",t:"BWR",lp:"GE BWR/4",ref:3952,up:.198,cap:.2,add:0,lat:34.7,lon:-87.12,mk:"Reg."},
+{n:"Arkansas Nuclear 1",s:"AR",t:"PWR",lp:"B&W 2-Loop",ref:2568,up:0,cap:.016,add:41,lat:35.31,lon:-93.23,mk:"Reg."},
+{n:"Arkansas Nuclear 2",s:"AR",t:"PWR",lp:"CE 2-Loop",ref:3026,up:.075,cap:.18,add:296,lat:35.31,lon:-93.23,mk:"Reg."},
+{n:"Palo Verde 1",s:"AZ",t:"PWR",lp:"CE Sys 80",ref:3990,up:.05,cap:.05,add:0,lat:33.39,lon:-112.86,mk:"Reg."},
+{n:"Palo Verde 2",s:"AZ",t:"PWR",lp:"CE Sys 80",ref:3990,up:.05,cap:.05,add:0,lat:33.39,lon:-112.86,mk:"Reg."},
+{n:"Palo Verde 3",s:"AZ",t:"PWR",lp:"CE Sys 80",ref:3990,up:.05,cap:.05,add:0,lat:33.39,lon:-112.86,mk:"Reg."},
+{n:"Diablo Canyon 1",s:"CA",t:"PWR",lp:"W 4-Loop",ref:3411,up:.02,cap:.09,add:234,lat:35.21,lon:-120.86,mk:"Reg."},
+{n:"Diablo Canyon 2",s:"CA",t:"PWR",lp:"W 4-Loop",ref:3411,up:0,cap:.09,add:307,lat:35.21,lon:-120.86,mk:"Reg."},
+{n:"Millstone 2",s:"CT",t:"PWR",lp:"CE 2-Loop",ref:2700,up:.05,cap:.18,add:334,lat:41.31,lon:-72.17,mk:"Merch."},
+{n:"Millstone 3",s:"CT",t:"PWR",lp:"W 4-Loop",ref:3650,up:.087,cap:.09,add:0,lat:41.31,lon:-72.17,mk:"Merch."},
+{n:"St. Lucie 1",s:"FL",t:"PWR",lp:"CE 2-Loop",ref:3020,up:.181,cap:.18,add:0,lat:27.35,lon:-80.25,mk:"Reg."},
+{n:"St. Lucie 2",s:"FL",t:"PWR",lp:"CE 2-Loop",ref:3020,up:.181,cap:.18,add:0,lat:27.35,lon:-80.25,mk:"Reg."},
+{n:"Turkey Point 3",s:"FL",t:"PWR",lp:"W 3-Loop",ref:2644,up:.202,cap:.2,add:0,lat:25.44,lon:-80.33,mk:"Reg."},
+{n:"Turkey Point 4",s:"FL",t:"PWR",lp:"W 3-Loop",ref:2644,up:.202,cap:.2,add:0,lat:25.44,lon:-80.33,mk:"Reg."},
+{n:"Hatch 1",s:"GA",t:"BWR",lp:"GE BWR/4",ref:2804,up:.151,cap:.2,add:119,lat:31.93,lon:-82.34,mk:"Reg."},
+{n:"Hatch 2",s:"GA",t:"BWR",lp:"GE BWR/4",ref:2804,up:.151,cap:.2,add:119,lat:31.93,lon:-82.34,mk:"Reg."},
+{n:"Vogtle 1",s:"GA",t:"PWR",lp:"W 4-Loop",ref:3626,up:.063,cap:.09,add:93,lat:33.14,lon:-81.76,mk:"Reg."},
+{n:"Vogtle 2",s:"GA",t:"PWR",lp:"W 4-Loop",ref:3626,up:.063,cap:.09,add:93,lat:33.14,lon:-81.76,mk:"Reg."},
+{n:"Vogtle 3",s:"GA",t:"PWR",lp:"W AP1000",ref:3400,up:0,cap:0,add:0,lat:33.14,lon:-81.76,mk:"Reg."},
+{n:"Vogtle 4",s:"GA",t:"PWR",lp:"W AP1000",ref:3400,up:0,cap:0,add:0,lat:33.14,lon:-81.76,mk:"Reg."},
+{n:"Braidwood 1",s:"IL",t:"PWR",lp:"W 4-Loop",ref:3645,up:.067,cap:.09,add:79,lat:41.24,lon:-88.23,mk:"Merch."},
+{n:"Braidwood 2",s:"IL",t:"PWR",lp:"W 4-Loop",ref:3645,up:.067,cap:.09,add:79,lat:41.24,lon:-88.23,mk:"Merch."},
+{n:"Byron 1",s:"IL",t:"PWR",lp:"W 4-Loop",ref:3645,up:.067,cap:.09,add:79,lat:42.08,lon:-89.28,mk:"Merch."},
+{n:"Byron 2",s:"IL",t:"PWR",lp:"W 4-Loop",ref:3645,up:.067,cap:.09,add:79,lat:42.08,lon:-89.28,mk:"Merch."},
+{n:"Clinton",s:"IL",t:"BWR",lp:"GE BWR/6",ref:3473,up:.2,cap:.2,add:0,lat:40.17,lon:-88.83,mk:"Merch."},
+{n:"Dresden 2",s:"IL",t:"BWR",lp:"GE BWR/3",ref:2957,up:.17,cap:.2,add:76,lat:41.39,lon:-88.27,mk:"Merch."},
+{n:"Dresden 3",s:"IL",t:"BWR",lp:"GE BWR/3",ref:2957,up:.17,cap:.2,add:76,lat:41.39,lon:-88.27,mk:"Merch."},
+{n:"LaSalle 1",s:"IL",t:"BWR",lp:"GE BWR/5",ref:3546,up:.067,cap:.2,add:443,lat:41.24,lon:-88.67,mk:"Merch."},
+{n:"LaSalle 2",s:"IL",t:"BWR",lp:"GE BWR/5",ref:3546,up:.067,cap:.2,add:443,lat:41.24,lon:-88.67,mk:"Merch."},
+{n:"Quad Cities 1",s:"IL",t:"BWR",lp:"GE BWR/3",ref:2957,up:.178,cap:.2,add:55,lat:41.73,lon:-90.31,mk:"Merch."},
+{n:"Quad Cities 2",s:"IL",t:"BWR",lp:"GE BWR/3",ref:2957,up:.178,cap:.2,add:55,lat:41.73,lon:-90.31,mk:"Merch."},
+{n:"Wolf Creek",s:"KS",t:"PWR",lp:"W 4-Loop",ref:3565,up:.045,cap:.09,add:154,lat:38.24,lon:-95.69,mk:"Reg."},
+{n:"River Bend",s:"LA",t:"BWR",lp:"GE BWR/6",ref:3091,up:.068,cap:.2,add:383,lat:30.76,lon:-91.33,mk:"Reg."},
+{n:"Waterford 3",s:"LA",t:"PWR",lp:"CE 2-Loop",ref:3716,up:.096,cap:.18,add:284,lat:30,lon:-90.47,mk:"Reg."},
+{n:"Calvert Cliffs 1",s:"MD",t:"PWR",lp:"CE 2-Loop",ref:2737,up:.07,cap:.18,add:282,lat:38.43,lon:-76.44,mk:"Merch."},
+{n:"Calvert Cliffs 2",s:"MD",t:"PWR",lp:"CE 2-Loop",ref:2737,up:.07,cap:.18,add:282,lat:38.43,lon:-76.44,mk:"Merch."},
+{n:"D.C. Cook 1",s:"MI",t:"PWR",lp:"W 4-Loop",ref:3304,up:.017,cap:.09,add:249,lat:41.98,lon:-86.56,mk:"Reg."},
+{n:"D.C. Cook 2",s:"MI",t:"PWR",lp:"W 4-Loop",ref:3468,up:.017,cap:.09,add:144,lat:41.98,lon:-86.56,mk:"Reg."},
+{n:"Fermi 2",s:"MI",t:"BWR",lp:"GE BWR/4",ref:3486,up:.04,cap:.2,add:536,lat:41.96,lon:-83.26,mk:"Merch."},
+{n:"Monticello",s:"MN",t:"BWR",lp:"GE BWR/3",ref:2004,up:.2,cap:.2,add:0,lat:45.33,lon:-93.85,mk:"Reg."},
+{n:"Prairie Island 1",s:"MN",t:"PWR",lp:"W 2-Loop",ref:1677,up:.016,cap:.185,add:279,lat:44.62,lon:-92.63,mk:"Reg."},
+{n:"Prairie Island 2",s:"MN",t:"PWR",lp:"W 2-Loop",ref:1677,up:.016,cap:.185,add:279,lat:44.62,lon:-92.63,mk:"Reg."},
+{n:"Grand Gulf",s:"MS",t:"BWR",lp:"GE BWR/6",ref:4408,up:.15,cap:.2,add:191,lat:32,lon:-91.05,mk:"Reg."},
+{n:"Callaway",s:"MO",t:"PWR",lp:"W 4-Loop",ref:3565,up:.045,cap:.09,add:154,lat:38.76,lon:-91.78,mk:"Reg."},
+{n:"Brunswick 1",s:"NC",t:"BWR",lp:"GE BWR/4",ref:2923,up:.208,cap:.2,add:0,lat:33.96,lon:-78.01,mk:"Reg."},
+{n:"Brunswick 2",s:"NC",t:"BWR",lp:"GE BWR/4",ref:2923,up:.208,cap:.2,add:0,lat:33.96,lon:-78.01,mk:"Reg."},
+{n:"McGuire 1",s:"NC",t:"PWR",lp:"W 4-Loop",ref:3411,up:.017,cap:.09,add:245,lat:35.43,lon:-80.95,mk:"Reg."},
+{n:"McGuire 2",s:"NC",t:"PWR",lp:"W 4-Loop",ref:3411,up:.017,cap:.09,add:245,lat:35.43,lon:-80.95,mk:"Reg."},
+{n:"Shearon Harris",s:"NC",t:"PWR",lp:"W 3-Loop",ref:2900,up:.062,cap:.2,add:378,lat:35.63,lon:-78.96,mk:"Reg."},
+{n:"Cooper",s:"NE",t:"BWR",lp:"GE BWR/4",ref:2419,up:.016,cap:.2,add:661,lat:40.36,lon:-95.64,mk:"Reg."},
+{n:"Seabrook",s:"NH",t:"PWR",lp:"W 4-Loop",ref:3648,up:.07,cap:.09,add:69,lat:42.9,lon:-70.85,mk:"Merch."},
+{n:"Hope Creek",s:"NJ",t:"BWR",lp:"GE BWR/4",ref:3902,up:.185,cap:.2,add:50,lat:39.47,lon:-75.54,mk:"Merch."},
+{n:"Salem 1",s:"NJ",t:"PWR",lp:"W 4-Loop",ref:3459,up:.034,cap:.09,add:186,lat:39.46,lon:-75.54,mk:"Merch."},
+{n:"Salem 2",s:"NJ",t:"PWR",lp:"W 4-Loop",ref:3459,up:.014,cap:.09,add:259,lat:39.46,lon:-75.54,mk:"Merch."},
+{n:"FitzPatrick",s:"NY",t:"BWR",lp:"GE BWR/4",ref:2536,up:.04,cap:.2,add:390,lat:43.52,lon:-76.4,mk:"Merch."},
+{n:"Ginna",s:"NY",t:"PWR",lp:"W 2-Loop",ref:1775,up:.168,cap:.185,add:26,lat:43.28,lon:-77.31,mk:"Merch."},
+{n:"Nine Mile Pt 1",s:"NY",t:"BWR",lp:"GE BWR/2",ref:1850,up:0,cap:.2,add:370,lat:43.52,lon:-76.41,mk:"Merch."},
+{n:"Nine Mile Pt 2",s:"NY",t:"BWR",lp:"GE BWR/5",ref:3988,up:.199,cap:.2,add:0,lat:43.52,lon:-76.41,mk:"Merch."},
+{n:"Davis-Besse",s:"OH",t:"PWR",lp:"B&W 2-Loop",ref:2817,up:.016,cap:.02,add:0,lat:41.6,lon:-83.09,mk:"Merch."},
+{n:"Perry 1",s:"OH",t:"BWR",lp:"GE BWR/6",ref:3756,up:.05,cap:.2,add:537,lat:41.8,lon:-81.14,mk:"Merch."},
+{n:"Beaver Valley 1",s:"PA",t:"PWR",lp:"W 3-Loop",ref:2900,up:.095,cap:.2,add:278,lat:40.62,lon:-80.43,mk:"Merch."},
+{n:"Beaver Valley 2",s:"PA",t:"PWR",lp:"W 3-Loop",ref:2900,up:.095,cap:.2,add:278,lat:40.62,lon:-80.43,mk:"Merch."},
+{n:"Limerick 1",s:"PA",t:"BWR",lp:"GE BWR/4",ref:3515,up:.067,cap:.2,add:439,lat:40.22,lon:-75.59,mk:"Merch."},
+{n:"Limerick 2",s:"PA",t:"BWR",lp:"GE BWR/4",ref:3515,up:.067,cap:.2,add:439,lat:40.22,lon:-75.59,mk:"Merch."},
+{n:"Peach Bottom 2",s:"PA",t:"BWR",lp:"GE BWR/4",ref:4016,up:.219,cap:.2,add:0,lat:39.76,lon:-76.27,mk:"Merch."},
+{n:"Peach Bottom 3",s:"PA",t:"BWR",lp:"GE BWR/4",ref:4016,up:.219,cap:.2,add:0,lat:39.76,lon:-76.27,mk:"Merch."},
+{n:"Susquehanna 1",s:"PA",t:"BWR",lp:"GE BWR/4",ref:3952,up:.197,cap:.2,add:0,lat:41.09,lon:-76.15,mk:"Merch."},
+{n:"Susquehanna 2",s:"PA",t:"BWR",lp:"GE BWR/4",ref:3952,up:.197,cap:.2,add:0,lat:41.09,lon:-76.15,mk:"Merch."},
+{n:"Catawba 1",s:"SC",t:"PWR",lp:"W 4-Loop",ref:3469,up:.017,cap:.09,add:249,lat:35.05,lon:-81.07,mk:"Reg."},
+{n:"Catawba 2",s:"SC",t:"PWR",lp:"W 4-Loop",ref:3411,up:0,cap:.09,add:307,lat:35.05,lon:-81.07,mk:"Reg."},
+{n:"Oconee 1",s:"SC",t:"PWR",lp:"B&W 2-Loop",ref:2568,up:.016,cap:.016,add:0,lat:34.79,lon:-82.9,mk:"Reg."},
+{n:"Oconee 2",s:"SC",t:"PWR",lp:"B&W 2-Loop",ref:2568,up:.016,cap:.016,add:0,lat:34.79,lon:-82.9,mk:"Reg."},
+{n:"Oconee 3",s:"SC",t:"PWR",lp:"B&W 2-Loop",ref:2568,up:.016,cap:.016,add:0,lat:34.79,lon:-82.9,mk:"Reg."},
+{n:"Robinson 2",s:"SC",t:"PWR",lp:"W 3-Loop",ref:2339,up:.063,cap:.2,add:302,lat:34.4,lon:-80.16,mk:"Reg."},
+{n:"Summer",s:"SC",t:"PWR",lp:"W 3-Loop",ref:2900,up:.045,cap:.2,add:430,lat:34.3,lon:-81.32,mk:"Reg."},
+{n:"Sequoyah 1",s:"TN",t:"PWR",lp:"W 4-Loop",ref:3455,up:.013,cap:.09,add:263,lat:35.23,lon:-85.09,mk:"Reg."},
+{n:"Sequoyah 2",s:"TN",t:"PWR",lp:"W 4-Loop",ref:3455,up:.013,cap:.09,add:263,lat:35.23,lon:-85.09,mk:"Reg."},
+{n:"Watts Bar 1",s:"TN",t:"PWR",lp:"W 4-Loop",ref:3459,up:.014,cap:.09,add:259,lat:35.6,lon:-84.79,mk:"Reg."},
+{n:"Watts Bar 2",s:"TN",t:"PWR",lp:"W 4-Loop",ref:3459,up:.014,cap:.09,add:259,lat:35.6,lon:-84.79,mk:"Reg."},
+{n:"Comanche Peak 1",s:"TX",t:"PWR",lp:"W 4-Loop",ref:3612,up:.06,cap:.09,add:104,lat:32.3,lon:-97.79,mk:"Merch."},
+{n:"Comanche Peak 2",s:"TX",t:"PWR",lp:"W 4-Loop",ref:3612,up:.06,cap:.09,add:103,lat:32.3,lon:-97.79,mk:"Merch."},
+{n:"South Texas 1",s:"TX",t:"PWR",lp:"W 4-Loop",ref:3853,up:.014,cap:.09,add:289,lat:28.8,lon:-96.05,mk:"Merch."},
+{n:"South Texas 2",s:"TX",t:"PWR",lp:"W 4-Loop",ref:3853,up:.014,cap:.09,add:289,lat:28.8,lon:-96.05,mk:"Merch."},
+{n:"North Anna 1",s:"VA",t:"PWR",lp:"W 3-Loop",ref:2940,up:.059,cap:.2,add:392,lat:38.06,lon:-77.79,mk:"Reg."},
+{n:"North Anna 2",s:"VA",t:"PWR",lp:"W 3-Loop",ref:2940,up:.059,cap:.2,add:392,lat:38.06,lon:-77.79,mk:"Reg."},
+{n:"Surry 1",s:"VA",t:"PWR",lp:"W 3-Loop",ref:2587,up:.06,cap:.2,add:343,lat:37.17,lon:-76.7,mk:"Reg."},
+{n:"Surry 2",s:"VA",t:"PWR",lp:"W 3-Loop",ref:2587,up:.06,cap:.2,add:343,lat:37.17,lon:-76.7,mk:"Reg."},
+{n:"Columbia Generating",s:"WA",t:"BWR",lp:"GE BWR/5",ref:3544,up:.059,cap:.2,add:470,lat:46.47,lon:-119.33,mk:"Reg."},
+{n:"Point Beach 1",s:"WI",t:"PWR",lp:"W 2-Loop",ref:1800,up:.186,cap:.185,add:0,lat:44.28,lon:-87.54,mk:"Reg."},
+{n:"Point Beach 2",s:"WI",t:"PWR",lp:"W 2-Loop",ref:1800,up:.186,cap:.185,add:0,lat:44.28,lon:-87.54,mk:"Reg."}
+];
+var PP=[
+{n:"Palisades Nuclear Plant",c:"Restart",tc:"PWR",mw:805,dv:"Holtec International",cu:"Grid",dt:"2026",st:"MI",lat:42.3222,lon:-86.3153},
+{n:"Crane Clean Energy (TMI-1)",c:"Restart",tc:"PWR",mw:835,dv:"Constellation Energy",cu:"Microsoft (20-yr PPA)",dt:"2027",st:"PA",lat:40.1531,lon:-76.7247},
+{n:"Duane Arnold",c:"Restart",tc:"BWR",mw:615,dv:"NextEra Energy",cu:"Google (25-yr PPA)",dt:"2029",st:"IA",lat:42.1006,lon:-91.7776},
+{n:"Kewaunee",c:"Restart",tc:"PWR",mw:556,dv:"TBD",cu:"TBD",dt:"TBD",st:"WI",lat:44.343,lon:-87.536},
+{n:"TerraPower Natrium",c:"ARDP",tc:"SFR",mw:345,dv:"TerraPower",cu:"Meta",dt:"2031",st:"WY",lat:41.7927,lon:-110.5377},
+{n:"X-energy Xe-100 (Dow)",c:"ARDP",tc:"HTGR",mw:320,dv:"X-energy / Dow",cu:"Dow Chemical",dt:"Early 2030s",st:"TX",lat:28.4141,lon:-96.7133},
+{n:"Kairos Hermes 1",c:"ARDP",tc:"FHR",mw:0,dv:"Kairos Power",cu:"Non-power demo",dt:"2027",st:"TN",lat:35.931,lon:-84.31},
+{n:"Kairos Hermes 2",c:"ARDP",tc:"FHR",mw:100,dv:"Kairos Power",cu:"Google / TVA",dt:"~2029",st:"TN",lat:35.933,lon:-84.315},
+{n:"BWXT BANR",c:"ARDP",tc:"HTGR",mw:50,dv:"BWXT",cu:"DOE / Wyoming",dt:"TBD",st:"WY",lat:41.14,lon:-104.82},
+{n:"TVA Clinch River",c:"SMR New Build",tc:"BWRX-300",mw:300,dv:"TVA / GE-Hitachi",cu:"Grid",dt:"~2033",st:"TN",lat:35.891,lon:-84.389},
+{n:"Holtec Pioneer SMR-300",c:"SMR New Build",tc:"SMR-300",mw:680,dv:"Holtec",cu:"Grid",dt:"~2030",st:"MI",lat:42.325,lon:-86.318},
+{n:"Cascade (Amazon)",c:"SMR New Build",tc:"Xe-100",mw:960,dv:"X-energy",cu:"Amazon",dt:"2030s",st:"WA",lat:46.55,lon:-119.25},
+{n:"Duke Belews Creek",c:"SMR New Build",tc:"TBD",mw:600,dv:"Duke Energy",cu:"Grid",dt:"2036-37",st:"NC",lat:36.244,lon:-80.059},
+{n:"Dominion North Anna SMR",c:"SMR New Build",tc:"SMR TBD",mw:300,dv:"Dominion",cu:"Grid",dt:"Mid-2030s",st:"VA",lat:38.06,lon:-77.79},
+{n:"AEP Indiana BWRX-300",c:"SMR New Build",tc:"BWRX-300",mw:300,dv:"AEP",cu:"Grid",dt:"2030s",st:"IN",lat:37.93,lon:-87.12},
+{n:"Creekstone Delta",c:"SMR New Build",tc:"TBD",mw:2000,dv:"Creekstone",cu:"Data centers",dt:"TBD",st:"UT",lat:39.352,lon:-112.577},
+{n:"Google/Elementl Power",c:"SMR New Build",tc:"TBD",mw:1800,dv:"Elementl Power",cu:"Google",dt:"2030s",st:"TBD",lat:39.5,lon:-98.35},
+{n:"Holtec Oyster Creek",c:"SMR New Build",tc:"SMR-300",mw:600,dv:"Holtec",cu:"Grid",dt:"2030s",st:"NJ",lat:39.814,lon:-74.206},
+{n:"NANO Nuclear KRONOS",c:"SMR New Build",tc:"HTGR",mw:15,dv:"NANO Nuclear",cu:"U of Illinois",dt:"TBD",st:"IL",lat:40.116,lon:-88.243},
+{n:"V.C. Summer 2&3",c:"Large New Build",tc:"AP1000",mw:2200,dv:"Westinghouse",cu:"TBD",dt:"TBD",st:"SC",lat:34.296,lon:-81.32},
+{n:"Fermi America",c:"Large New Build",tc:"AP1000",mw:4400,dv:"Westinghouse",cu:"TBD",dt:"Early 2030s",st:"TX",lat:35.199,lon:-101.845},
+{n:"NYPA New Nuclear",c:"Large New Build",tc:"TBD",mw:1000,dv:"NYPA",cu:"Grid",dt:"2030s",st:"NY",lat:42.65,lon:-73.75},
+{n:"Valar Atomics",c:"DOE Pilot",tc:"HTGR",mw:0.1,dv:"Valar Atomics",cu:"DOE",dt:"2026",st:"WY",lat:41.790,lon:-110.530},
+{n:"Aalo Atomics Aalo-X",c:"DOE Pilot",tc:"Sodium",mw:0,dv:"Aalo Atomics",cu:"DOE/INL",dt:"2026",st:"ID",lat:43.515,lon:-112.945},
+{n:"Antares MARK-0",c:"DOE Pilot",tc:"Heat pipe",mw:0,dv:"Antares Nuclear",cu:"DOE/INL",dt:"2026",st:"ID",lat:43.518,lon:-112.948},
+{n:"Oklo Aurora (INL)",c:"DOE Pilot",tc:"Fast reactor",mw:75,dv:"Oklo Inc.",cu:"DOE/INL",dt:"2027-28",st:"ID",lat:43.520,lon:-112.950},
+{n:"Oklo Pluto",c:"DOE Pilot",tc:"Fast reactor",mw:0,dv:"Oklo Inc.",cu:"DOE/INL",dt:"TBD",st:"ID",lat:43.522,lon:-112.952},
+{n:"Atomic Alchemy VIPR",c:"DOE Pilot",tc:"LWR",mw:0,dv:"Oklo/Alchemy",cu:"DOE/INL",dt:"TBD",st:"ID",lat:43.524,lon:-112.954},
+{n:"Radiant Kaleidos",c:"DOE Pilot",tc:"HTGR",mw:1.2,dv:"Radiant Ind.",cu:"DOE/INL",dt:"2026",st:"ID",lat:43.526,lon:-112.956},
+{n:"Deep Fission DFBR-1",c:"DOE Pilot",tc:"Underground PWR",mw:15,dv:"Deep Fission",cu:"DOE",dt:"2026",st:"KS",lat:37.340,lon:-95.262},
+{n:"Last Energy PWR-20",c:"DOE Pilot",tc:"PWR",mw:5,dv:"Last Energy",cu:"Texas A&M",dt:"2026",st:"TX",lat:30.628,lon:-96.464},
+{n:"Natura MSR-1",c:"DOE Pilot",tc:"Molten salt",mw:0,dv:"Natura Resources",cu:"Abilene Christian",dt:"2026",st:"TX",lat:32.449,lon:-99.733},
+{n:"Terrestrial TETRA",c:"DOE Pilot",tc:"IMSR",mw:0,dv:"Terrestrial Energy",cu:"DOE/INL",dt:"TBD",st:"ID",lat:43.528,lon:-112.958},
+{n:"Westinghouse eVinci",c:"DOE Pilot",tc:"Heat pipe",mw:5,dv:"Westinghouse",cu:"DOE/INL",dt:"2027",st:"ID",lat:43.534,lon:-112.964},
+{n:"MARVEL Microreactor",c:"DOE Pilot",tc:"NaK",mw:0.02,dv:"INL/DOE",cu:"R&D (AWS)",dt:"2026-28",st:"ID",lat:43.530,lon:-112.960},
+{n:"Project Pele",c:"Military",tc:"HTGR",mw:5,dv:"BWXT",cu:"US Army",dt:"2026",st:"ID",lat:43.5154,lon:-112.9452},
+{n:"Janus Program",c:"Military",tc:"Microreactor",mw:5,dv:"TBD",cu:"US Army",dt:"2028-30",st:"AK",lat:64.663,lon:-147.102},
+{n:"Amazon-Talen Susquehanna",c:"Big Tech PPA",tc:"BWR (existing)",mw:960,dv:"Talen Energy",cu:"Amazon",dt:"Active",st:"PA",lat:41.095,lon:-76.155},
+{n:"Meta-Constellation",c:"Big Tech PPA",tc:"Existing fleet",mw:0,dv:"Constellation",cu:"Meta",dt:"Active",st:"IL",lat:41.24,lon:-88.23},
+{n:"Switch-Oklo (12 GW)",c:"Big Tech PPA",tc:"Aurora",mw:12000,dv:"Oklo",cu:"Switch",dt:"2030s",st:"NV",lat:36.04,lon:-115.17},
+{n:"ENTRA1-NuScale (6 GW)",c:"Big Tech PPA",tc:"NuScale VOYGR",mw:6000,dv:"NuScale",cu:"ENTRA1/TVA",dt:"2030s",st:"TN",lat:35.75,lon:-84.0}
+];
+var SR={"AL":{m:"None",e:"Clear"},"AR":{m:"None",e:"Clear"},"AZ":{m:"None",e:"Clear"},"CA":{m:"HLW Repository Req.",e:"Restricted"},"CT":{m:"HLW Repository Req.",e:"Restricted"},"FL":{m:"None",e:"Clear"},"GA":{m:"None",e:"Clear"},"IL":{m:"Repealed",e:"Clear"},"KS":{m:"None",e:"Clear"},"LA":{m:"None",e:"Mixed"},"MD":{m:"None",e:"Clear"},"MI":{m:"None",e:"Clear"},"MN":{m:"Certificate-of-Need Ban",e:"Restricted"},"MO":{m:"None",e:"Clear"},"MS":{m:"None",e:"Clear"},"NC":{m:"None",e:"Clear"},"NE":{m:"None",e:"Clear"},"NH":{m:"None",e:"Clear"},"NJ":{m:"Coastal Limits",e:"Mixed"},"NY":{m:"LIPA Area Ban",e:"Mixed"},"OH":{m:"None",e:"Clear"},"PA":{m:"None",e:"Clear"},"SC":{m:"None",e:"Clear"},"TN":{m:"None",e:"Clear"},"TX":{m:"None",e:"Mixed"},"VA":{m:"None",e:"Clear"},"WA":{m:"None",e:"Mixed"},"WI":{m:"Repealed",e:"Clear"}};
+var FP={"1":"AL","2":"AK","4":"AZ","5":"AR","6":"CA","8":"CO","9":"CT","10":"DE","12":"FL","13":"GA","15":"HI","16":"ID","17":"IL","18":"IN","19":"IA","20":"KS","21":"KY","22":"LA","23":"ME","24":"MD","25":"MA","26":"MI","27":"MN","28":"MS","29":"MO","30":"MT","31":"NE","32":"NV","33":"NH","34":"NJ","35":"NM","36":"NY","37":"NC","38":"ND","39":"OH","40":"OK","41":"OR","42":"PA","44":"RI","45":"SC","46":"SD","47":"TN","48":"TX","49":"UT","50":"VT","51":"VA","53":"WA","54":"WV","55":"WI","56":"WY"};
+var CC={"Restart":"#D4622B","ARDP":"#1B6B6B","SMR New Build":"#5B3A7A","DOE Pilot":"#C4A035","Military":"#6B8B3D","Big Tech PPA":"#2B7ABF","Large New Build":"#8B2B2B"};
+var EC={"Clear":"#3D5C3D","Mixed":"#C4A035","Restricted":"#8B2B2B"};
+
+function App(){
+  var _a=uS(null),topo=_a[0],setTopo=_a[1];var _b=uS(null),sel=_b[0],setSel=_b[1];
+  var _c=uS(null),hov=_c[0],setHov=_c[1];var _d=uS({x:0,y:0}),hp=_d[0],setHp=_d[1];
+  var _e=uS("uprate"),layer=_e[0],setLayer=_e[1];
+  var _f=uS({type:"All",mk:"All",hr:"All",env:"All"}),filt=_f[0],setFilt=_f[1];
+  var _g=uS("All"),pCat=_g[0],setPCat=_g[1];var mr=uR(null);
+  var proj=uM(function(){return d3.geoAlbersUsa().scale(1080).translate([476,296])},[]);
+  var path=uM(function(){return d3.geoPath().projection(proj)},[proj]);
+  uE(function(){fetch("https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json").then(function(r){return r.json()}).then(setTopo)},[]);
+  var sts=uM(function(){return topo?topojson.feature(topo,topo.objects.states).features:[]},[topo]);
+  var fUp=uM(function(){return UP.filter(function(r){if(filt.type!=="All"&&r.t!==filt.type)return false;if(filt.mk!=="All"&&r.mk.indexOf(filt.mk.slice(0,3))!==0)return false;if(filt.hr==="Headroom"&&r.add===0)return false;if(filt.hr==="Maxed"&&r.add>0)return false;var sr=SR[r.s];if(filt.env!=="All"&&(!sr||sr.e!==filt.env))return false;return true})},[filt]);
+  var sites=uM(function(){var m={};fUp.forEach(function(r){var k=r.lat+"_"+r.lon;if(!m[k])m[k]={lat:r.lat,lon:r.lon,ps:[],add:0,st:r.s};m[k].ps.push(r);m[k].add+=r.add});return Object.values(m)},[fUp]);
+  var fPP=uM(function(){return pCat==="All"?PP:PP.filter(function(p){return p.c===pCat})},[pCat]);
+  var mx=uM(function(){var v=sites.map(function(s){return s.add});v.push(1);return Math.max.apply(null,v)},[sites]);
+  var stats=uM(function(){var t=fUp.reduce(function(a,r){return a+r.add},0);return{u:fUp.length,t:t,gwe:(t/3/1000).toFixed(1),hr:fUp.filter(function(r){return r.add>0}).length,pp:PP.length,ppMW:PP.reduce(function(a,p){return a+p.mw},0)}},[fUp]);
+  function stFill(id){var ab=FP[String(id)];var sr=SR[ab];if(layer==="regulatory"&&sr)return sr.e==="Clear"?"#3D5C3D18":sr.e==="Mixed"?"#C4A03518":"#8B2B2B18";if(fUp.some(function(r){return r.s===ab})||PP.some(function(p){return p.st===ab}))return"#F5F2E8";return"#EAE7DD"}
+  function Btn(p){return e("button",{className:"b "+(p.on?"bo":"bf"),onClick:p.onClick},p.children)}
+  function doHov(type,data,ev){setHov(Object.assign({type:type},data));if(mr.current){var b=mr.current.getBoundingClientRect();setHp({x:ev.clientX-b.left,y:ev.clientY-b.top})}}
+  var svgK=[e("rect",{key:"bg",width:960,height:600,fill:"#FDFCF9"})];
+  sts.forEach(function(f,i){svgK.push(e("path",{key:"s"+i,d:path(f)||"",fill:stFill(f.id),stroke:"#B8B8B8",strokeWidth:.5}))});
+  if(layer==="uprate"||layer==="regulatory"){sites.slice().sort(function(a,b){return b.add-a.add}).forEach(function(s,i){var pt=proj([s.lon,s.lat]);if(!pt)return;var has=s.add>0,rad=has?3+s.add/mx*7:2.5;var col=layer==="regulatory"?(EC[(SR[s.st]||{}).e]||"#8A8A8A"):(has?"#2B4B6F":"#8A8A8A");var isSel=sel&&sel.type==="up"&&sel.lat===s.lat&&sel.lon===s.lon;var k=[];if(isSel)k.push(e("circle",{key:"sel",cx:pt[0],cy:pt[1],r:rad+5,fill:"none",stroke:col,strokeWidth:2,strokeDasharray:"4,2",style:{animation:"pu 2s infinite"}}));k.push(e("circle",{key:"d",cx:pt[0],cy:pt[1],r:rad,fill:col,stroke:"#FDFCF9",strokeWidth:has?1.2:.8,opacity:isSel?1:.85}));if(has&&rad>5)k.push(e("circle",{key:"r",cx:pt[0],cy:pt[1],r:rad-1.5,fill:"none",stroke:"rgba(255,255,255,.35)",strokeWidth:.5}));svgK.push(e("g",{key:"u"+i,style:{cursor:"pointer"},onClick:function(){setSel(Object.assign({type:"up"},s))},onMouseEnter:function(ev){doHov("up",s,ev)},onMouseLeave:function(){setHov(null)}},k))})}
+  if(layer==="pipeline"){fPP.forEach(function(p,i){var pt=proj([p.lon,p.lat]);if(!pt)return;var rad=Math.max(4,Math.min(11,3+Math.sqrt(Math.max(p.mw,1))/8));var cl=CC[p.c]||"#8A8A8A";var isSel=sel&&sel.type==="pp"&&sel.n===p.n;var k=[];if(isSel)k.push(e("circle",{key:"sel",cx:pt[0],cy:pt[1],r:rad+6,fill:"none",stroke:cl,strokeWidth:2,strokeDasharray:"4,2"}));k.push(e("rect",{key:"m",x:pt[0]-rad/1.4,y:pt[1]-rad/1.4,width:rad*1.4,height:rad*1.4,fill:cl,stroke:"#FDFCF9",strokeWidth:1.5,opacity:isSel?1:.9,transform:"rotate(45 "+pt[0]+" "+pt[1]+")"}));svgK.push(e("g",{key:"p"+i,style:{cursor:"pointer"},onClick:function(){setSel(Object.assign({type:"pp"},p))},onMouseEnter:function(ev){doHov("pp",p,ev)},onMouseLeave:function(){setHov(null)}},k))})}
+  var tooltip=null;
+  if(hov&&!sel){var tk=[];if(hov.type==="up"){tk.push(e("div",{key:"t",style:{fontSize:14,fontWeight:700}},hov.ps.length>1?hov.ps[0].n.replace(/ \d$/,"")+" ("+hov.ps.length+"u)":hov.ps[0].n));tk.push(e("div",{key:"s",style:{fontSize:11,color:"#5C5C5C",fontFamily:"var(--mono)",margin:"2px 0 4px"}},hov.st+" \u00b7 "+hov.ps[0].t+" \u00b7 "+hov.ps[0].lp));tk.push(e("div",{key:"v",style:{fontSize:13,fontWeight:700,color:hov.add>0?"#2B4B6F":"#8A8A8A"}},hov.add>0?"+"+Math.round(hov.add).toLocaleString()+" MWt headroom":"Fully uprated"))}else{tk.push(e("div",{key:"t",style:{fontSize:14,fontWeight:700}},hov.n));tk.push(e("div",{key:"s",style:{fontSize:11,fontFamily:"var(--mono)",margin:"2px 0 4px"}},e("span",{style:{color:CC[hov.c],fontWeight:700}},hov.c)," \u00b7 "+hov.tc+" \u00b7 "+hov.st));if(hov.mw>0)tk.push(e("div",{key:"m",style:{fontSize:13,fontWeight:700,color:CC[hov.c]}},hov.mw.toLocaleString()+" MW"));tk.push(e("div",{key:"d",style:{fontSize:11,color:"#5C5C5C"}},hov.dv+" \u2192 "+hov.cu+" \u00b7 "+hov.dt))}tooltip=e("div",{className:"tt",style:{position:"absolute",left:Math.min(hp.x+14,480),top:hp.y-10,background:"#FDFCF9",border:"2px solid #1A1A1A",padding:"10px 14px",pointerEvents:"none",zIndex:10,minWidth:200,maxWidth:300}},tk)}
+  var legK=[];if(layer==="uprate"){legK.push(e("span",{key:"a",style:{display:"flex",alignItems:"center",gap:3}},e("span",{style:{width:8,height:8,borderRadius:"50%",background:"#2B4B6F",display:"inline-block"}})," Headroom"));legK.push(e("span",{key:"b",style:{display:"flex",alignItems:"center",gap:3}},e("span",{style:{width:8,height:8,borderRadius:"50%",background:"#8A8A8A",display:"inline-block"}})," Maxed"));legK.push(e("span",{key:"c",style:{color:"#9C9788"}},"size = MWt"))}
+  if(layer==="regulatory"){["Clear","Mixed","Restricted"].forEach(function(k){legK.push(e("span",{key:k,style:{display:"flex",alignItems:"center",gap:3}},e("span",{style:{width:8,height:8,background:EC[k],display:"inline-block"}})," "+k))})}
+  if(layer==="pipeline"){Object.keys(CC).forEach(function(k){legK.push(e("span",{key:k,style:{display:"flex",alignItems:"center",gap:3}},e("span",{style:{width:7,height:7,background:CC[k],display:"inline-block",transform:"rotate(45deg)"}})," "+k))})}
+  var sideContent;
+  if(sel){var hdr=e("div",{key:"hdr",style:{display:"flex",justifyContent:"space-between",marginBottom:10}},e("div",null,e("h2",{style:{fontSize:17,fontWeight:700,margin:0}},sel.type==="up"?sel.ps[0].n.replace(/ \d$/,""):sel.n),e("p",{style:{fontSize:11,color:"#5C5C5C",fontFamily:"var(--mono)",margin:"3px 0 0"}},sel.type==="up"?(sel.st+" \u00b7 "+sel.ps[0].t+" \u00b7 "+sel.ps[0].lp+" \u00b7 "+sel.ps[0].mk):(e("span",null,e("span",{style:{color:CC[sel.c]||"",fontWeight:700}},sel.c||"")," \u00b7 "+(sel.tc||"")+" \u00b7 "+(sel.st||""))))),e("button",{onClick:function(){setSel(null)},style:{background:"none",border:"1px solid #B8B8B8",color:"#5C5C5C",padding:"2px 8px",cursor:"pointer",fontFamily:"var(--mono)",fontSize:11}},"\u2715"));
+    var body=[];
+    if(sel.type==="up"){var all=UP.filter(function(r){return r.lat===sel.lat&&r.lon===sel.lon});var tA=all.reduce(function(a,r){return a+r.add},0);var tR=all.reduce(function(a,r){return a+r.ref},0);var sr=SR[sel.st];if(sr)body.push(e("div",{key:"env",style:{display:"inline-block",padding:"3px 10px",fontSize:11,fontWeight:700,fontFamily:"var(--mono)",border:"2px solid "+(EC[sr.e]||""),color:EC[sr.e],marginBottom:10}},sr.e.toUpperCase()+" PATH"));if(sr&&sr.m!=="None"&&sr.m!=="Repealed")body.push(e("div",{key:"mor",style:{fontSize:12,color:"#8B2B2B",fontWeight:700,marginBottom:8,padding:"4px 10px",borderLeft:"3px solid #8B2B2B",background:"rgba(139,43,43,.05)"}},"Moratorium: "+sr.m));var rows=all.map(function(r,i){return e("tr",{key:i},e("td",{style:{padding:"3px 6px",borderBottom:"1px solid #DCDCDC",fontWeight:700,fontFamily:"var(--serif)",fontSize:11}},r.n),e("td",{style:{padding:"3px 6px",borderBottom:"1px solid #DCDCDC",textAlign:"right"}},r.ref.toLocaleString()),e("td",{style:{padding:"3px 6px",borderBottom:"1px solid #DCDCDC",textAlign:"right"}},(r.up*100).toFixed(1)+"%"),e("td",{style:{padding:"3px 6px",borderBottom:"1px solid #DCDCDC",textAlign:"right",fontWeight:700,color:r.add>0?"#2B4B6F":"#8A8A8A"}},"+"+Math.round(r.add)))});body.push(e("table",{key:"tbl",style:{width:"100%",borderCollapse:"collapse",fontSize:12,fontFamily:"var(--mono)",marginBottom:12}},e("thead",null,e("tr",null,["Unit","Ref","Up%","+MWt"].map(function(h){return e("th",{key:h,style:{textAlign:h==="Unit"?"left":"right",padding:"3px 6px",borderBottom:"2px solid #1A1A1A",fontSize:10}},h)}))),e("tbody",null,rows)));if(tA>0)body.push(e("div",{key:"bar",style:{marginBottom:12}},e("div",{style:{display:"flex",justifyContent:"space-between",fontSize:10,fontFamily:"var(--mono)",color:"#9C9788",marginBottom:3}},e("span",null,"Current \u2192 Cap"),e("span",{style:{color:"#2B4B6F",fontWeight:700}},"+"+Math.round(tA).toLocaleString()+" MWt")),e("div",{style:{height:8,background:"#DCDCDC",overflow:"hidden"}},e("div",{style:{height:"100%",background:"linear-gradient(90deg,#5C5C5C 0%,#5C5C5C "+tR/(tR+tA)*100+"%,#2B4B6F "+tR/(tR+tA)*100+"%,#2B4B6F 100%)"}}))))}
+    else{[{l:"Developer",v:sel.dv},{l:"Customer",v:sel.cu},{l:"Technology",v:sel.tc},{l:"Capacity",v:sel.mw>0?sel.mw.toLocaleString()+" MW":"Demo/R&D"},{l:"Target",v:sel.dt},{l:"State",v:sel.st}].forEach(function(f,i){body.push(e("div",{key:i,style:{display:"flex",justifyContent:"space-between",padding:"6px 0",borderBottom:"1px solid #DCDCDC",fontSize:12}},e("span",{className:"lb"},f.l),e("span",{style:{fontWeight:700,fontFamily:"var(--mono)",textAlign:"right",maxWidth:180}},f.v)))})}
+    sideContent=e("div",{style:{padding:16}},hdr,body)}
+  else{var lk=[e("h3",{key:"h",style:{fontSize:13,fontWeight:700,margin:"0 0 4px",textTransform:"uppercase",letterSpacing:".05em",fontVariant:"small-caps"}},layer==="pipeline"?"Pipeline Projects ("+fPP.length+")":"Top Uprate Opportunities"),e("div",{key:"hr",style:{borderBottom:"1px solid #B8B8B8",marginBottom:8}})];
+    if(layer==="pipeline"){fPP.slice().sort(function(a,b){return b.mw-a.mw}).forEach(function(p,i){lk.push(e("div",{key:i,className:"si",onClick:function(){setSel(Object.assign({type:"pp"},p))}},e("div",{style:{width:10,height:10,flexShrink:0,background:CC[p.c]||"#8A8A8A",transform:"rotate(45deg)"}}),e("div",{style:{flex:1,minWidth:0}},e("div",{style:{fontSize:12,fontWeight:700}},p.n),e("div",{style:{fontSize:10,color:"#5C5C5C",fontFamily:"var(--mono)"}},p.c+" \u00b7 "+p.tc+" \u00b7 "+p.dt)),p.mw>0?e("div",{style:{fontFamily:"var(--mono)",fontSize:11,fontWeight:700,color:CC[p.c],flexShrink:0}},p.mw>=1000?(p.mw/1000).toFixed(1)+"GW":p.mw+"MW"):null))})}
+    else{sites.filter(function(s){return s.add>0}).sort(function(a,b){return b.add-a.add}).slice(0,25).forEach(function(s,i){var sr=SR[s.st];var nm=s.ps.length>1?s.ps[0].n.replace(/ \d$/,"")+" ("+s.ps.length+"u)":s.ps[0].n;lk.push(e("div",{key:i,className:"si",onClick:function(){setSel(Object.assign({type:"up"},s))},onMouseEnter:function(ev){doHov("up",s,ev)},onMouseLeave:function(){setHov(null)}},e("div",{style:{width:8,height:8,flexShrink:0,background:EC[(sr||{}).e]||"#8A8A8A",border:"1px solid #8A8A8A"}}),e("div",{style:{flex:1,minWidth:0}},e("div",{style:{fontSize:12,fontWeight:700}},nm),e("div",{style:{fontSize:10,color:"#5C5C5C",fontFamily:"var(--mono)"}},s.st+" \u00b7 "+s.ps[0].t+" \u00b7 "+s.ps[0].mk)),e("div",{style:{fontFamily:"var(--mono)",fontSize:11,fontWeight:700,color:"#2B4B6F",flexShrink:0}},"+"+Math.round(s.add).toLocaleString())))})}
+    sideContent=e("div",{style:{padding:12}},lk)}
+  var fb=[];if(layer==="uprate"){fb.push(e("span",{key:"fl",className:"lb",style:{marginRight:4}},"Filter"));[{k:"type",o:["All","PWR","BWR"]},{k:"mk",o:["All","Reg.","Merch."]},{k:"hr",o:["All","Headroom","Maxed"]},{k:"env",o:["All","Clear","Mixed","Restricted"]}].forEach(function(g){fb.push(e("div",{key:g.k,style:{display:"flex",gap:2}},g.o.map(function(v){return e(Btn,{key:v,on:filt[g.k]===v,onClick:function(){var nf={};Object.keys(filt).forEach(function(x){nf[x]=filt[x]});nf[g.k]=v;setFilt(nf)}},v)})))})}
+  if(layer==="pipeline"){fb.push(e("span",{key:"cl",className:"lb",style:{marginRight:4}},"Category"));var cats=["All"];Object.keys(CC).forEach(function(c){cats.push(c)});cats.forEach(function(c){fb.push(e(Btn,{key:c,on:pCat===c,onClick:function(){setPCat(c)}},c))})}
+  return e("div",null,e("header",{style:{background:"#1A1A1A",color:"#FDFCF9",padding:"20px 36px",textAlign:"center"}},e("h1",{style:{fontSize:21,fontWeight:700,letterSpacing:".06em",textTransform:"uppercase",margin:"0 0 4px"}},"Nuclear Uprate & Pipeline Map"),e("p",{style:{fontSize:12,fontStyle:"italic",color:"#B8B8B8",margin:0}},"Operating Fleet Uprate Potential + New Reactor Pipeline \u2014 "+PP.length+" Pipeline Projects, "+UP.length+" Operating Units")),e("div",{style:{maxWidth:1400,margin:"0 auto",padding:"20px 36px"}},e("div",{style:{display:"flex",gap:20,flexWrap:"wrap",marginBottom:14}},[{l:"Operating Units",v:stats.u},{l:"With Headroom",v:stats.hr},{l:"Uprate MWt",v:stats.t.toLocaleString()},{l:"\u2248 GWe",v:stats.gwe},{l:"Pipeline Projects",v:stats.pp},{l:"Pipeline MW",v:stats.ppMW.toLocaleString()}].map(function(s,i){return e("div",{key:i,style:{flex:"1 1 90px"}},e("div",{className:"lb",style:{marginBottom:2}},s.l),e("div",{className:"sv"},s.v))})),e("div",{style:{display:"flex",gap:6,flexWrap:"wrap",alignItems:"center",marginBottom:14}},[e("span",{key:"ly",className:"lb",style:{marginRight:4}},"Layer"),e(Btn,{key:"u",on:layer==="uprate",onClick:function(){setLayer("uprate");setSel(null)}},"Uprate Potential"),e(Btn,{key:"p",on:layer==="pipeline",onClick:function(){setLayer("pipeline");setSel(null)}},"New Projects"),e(Btn,{key:"r",on:layer==="regulatory",onClick:function(){setLayer("regulatory");setSel(null)}},"Regulatory"),e("span",{key:"sp",style:{width:1,height:20,background:"#B8B8B8",margin:"0 6px"}})].concat(fb)),e("div",{style:{display:"flex",gap:20,flexWrap:"wrap"}},e("div",{ref:mr,style:{flex:"1 1 680px",background:"#FDFCF9",border:"1px solid #B8B8B8",position:"relative",overflow:"hidden"}},e("svg",{viewBox:"0 0 960 600",style:{width:"100%",display:"block"}},svgK),tooltip,e("div",{style:{position:"absolute",bottom:8,left:8,display:"flex",gap:10,fontSize:10,fontFamily:"var(--mono)",background:"rgba(253,252,249,.92)",padding:"6px 10px",border:"1px solid #B8B8B8",flexWrap:"wrap",maxWidth:520}},legK)),e("div",{style:{flex:"0 0 320px",maxHeight:580,overflowY:"auto",background:"#FDFCF9",border:"1px solid #B8B8B8"}},sideContent)),e("footer",{style:{borderTop:"2px solid #1A1A1A",paddingTop:12,marginTop:20,fontSize:10,color:"#8A8A8A",textAlign:"center",fontStyle:"italic"}},"Sources: INL/RPT-24-78810 \u00b7 NEI 2024 Survey \u00b7 DOE Liftoff (2024) \u00b7 NRC Uprate Approvals \u00b7 KH Nuclear Task Force")))}
+
+ReactDOM.createRoot(document.getElementById("root")).render(e(App));
+
+</script>
+</body>
+</html>
