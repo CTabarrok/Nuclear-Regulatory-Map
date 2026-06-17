@@ -1,0 +1,8 @@
+{
+  "_comment": "COUNTY OVERRIDE LAYER \u2014 Kimley-Horn Nuclear Task Force. Hand-maintained, keyed by 5-digit FIPS. Add county/municipal ordinances and local codes here as they are documented. flag: restricted | favorable | watch. No clean nationwide county-rules dataset exists, so this layer is curated as items are confirmed.",
+  "counties": {
+    "36059": {"st": "NY", "name": "Nassau County", "flag": "restricted", "note": "Within former LILCO service area \u2014 Long Island nuclear construction moratorium applies."},
+    "36103": {"st": "NY", "name": "Suffolk County", "flag": "restricted", "note": "Within former LILCO service area \u2014 Long Island nuclear construction moratorium applies."},
+    "36081": {"st": "NY", "name": "Queens County", "flag": "restricted", "note": "Portions within former LILCO service area subject to the Long Island moratorium."}
+  }
+}

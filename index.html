@@ -1,241 +1,272 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>KH Nuclear Task Force — Uprate &amp; Pipeline Map</title>
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,700;1,8..60,400&family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet"/>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{--s:'Source Serif 4','Georgia',serif;--m:'IBM Plex Mono','Consolas',monospace}
-body{background:#2D2D2D;color:#ddd;font-family:var(--s)}
-.b{padding:4px 12px;font-size:11px;border-radius:2px;cursor:pointer;font-family:var(--m);letter-spacing:.03em;transition:all .12s;display:inline-block}
-.bo{font-weight:700;border:1px solid #C4A046;background:#C4A046;color:#1A1A1A}
-.bf{font-weight:400;border:1px solid #555;background:transparent;color:#999}
-.bg.bo{background:#C4A046;border-color:#C4A046;color:#1A1A1A}
-.bg.bf{border-color:#C4A046;color:#C4A046;background:transparent}
-.b:hover{opacity:.85}
-.si{display:flex;align-items:center;gap:8px;padding:6px 8px;cursor:pointer;border-bottom:1px solid #333;transition:background .12s}
-.si:hover{background:#2D2D2D}
-@keyframes pu{0%,100%{opacity:.3}50%{opacity:1}}
-</style>
-</head>
-<body>
-<div id="root"></div>
-<script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-<script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-<script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
-<script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
-<script>
-"use strict";
-var h=React.createElement,uS=React.useState,uE=React.useEffect,uM=React.useMemo,uR=React.useRef;
-var UP=[{n:"Farley 1",s:"AL",t:"PWR",lp:"W 3-Loop",ref:2775,up:0.063,cap:0.2,add:358,lat:31.22,lon:-85.11,mk:"Reg."},
-{n:"Farley 2",s:"AL",t:"PWR",lp:"W 3-Loop",ref:2775,up:0.063,cap:0.2,add:358,lat:31.22,lon:-85.11,mk:"Reg."},
-{n:"Browns Ferry 1",s:"AL",t:"BWR",lp:"GE BWR/4",ref:3952,up:0.2,cap:0.2,add:0,lat:34.7,lon:-87.12,mk:"Reg."},
-{n:"Browns Ferry 2",s:"AL",t:"BWR",lp:"GE BWR/4",ref:3952,up:0.198,cap:0.2,add:0,lat:34.7,lon:-87.12,mk:"Reg."},
-{n:"Browns Ferry 3",s:"AL",t:"BWR",lp:"GE BWR/4",ref:3952,up:0.198,cap:0.2,add:0,lat:34.7,lon:-87.12,mk:"Reg."},
-{n:"Arkansas Nuclear 1",s:"AR",t:"PWR",lp:"B&W 2-Loop",ref:2568,up:0,cap:0.016,add:41,lat:35.31,lon:-93.23,mk:"Reg."},
-{n:"Arkansas Nuclear 2",s:"AR",t:"PWR",lp:"CE 2-Loop",ref:3026,up:0.075,cap:0.18,add:296,lat:35.31,lon:-93.23,mk:"Reg."},
-{n:"Palo Verde 1",s:"AZ",t:"PWR",lp:"CE Sys 80",ref:3990,up:0.05,cap:0.05,add:0,lat:33.39,lon:-112.86,mk:"Reg."},
-{n:"Palo Verde 2",s:"AZ",t:"PWR",lp:"CE Sys 80",ref:3990,up:0.05,cap:0.05,add:0,lat:33.39,lon:-112.86,mk:"Reg."},
-{n:"Palo Verde 3",s:"AZ",t:"PWR",lp:"CE Sys 80",ref:3990,up:0.05,cap:0.05,add:0,lat:33.39,lon:-112.86,mk:"Reg."},
-{n:"Diablo Canyon 1",s:"CA",t:"PWR",lp:"W 4-Loop",ref:3411,up:0.02,cap:0.09,add:234,lat:35.21,lon:-120.86,mk:"Reg."},
-{n:"Diablo Canyon 2",s:"CA",t:"PWR",lp:"W 4-Loop",ref:3411,up:0,cap:0.09,add:307,lat:35.21,lon:-120.86,mk:"Reg."},
-{n:"Millstone 2",s:"CT",t:"PWR",lp:"CE 2-Loop",ref:2700,up:0.05,cap:0.18,add:334,lat:41.31,lon:-72.17,mk:"Merch."},
-{n:"Millstone 3",s:"CT",t:"PWR",lp:"W 4-Loop",ref:3650,up:0.087,cap:0.09,add:0,lat:41.31,lon:-72.17,mk:"Merch."},
-{n:"St. Lucie 1",s:"FL",t:"PWR",lp:"CE 2-Loop",ref:3020,up:0.181,cap:0.18,add:0,lat:27.35,lon:-80.25,mk:"Reg."},
-{n:"St. Lucie 2",s:"FL",t:"PWR",lp:"CE 2-Loop",ref:3020,up:0.181,cap:0.18,add:0,lat:27.35,lon:-80.25,mk:"Reg."},
-{n:"Turkey Point 3",s:"FL",t:"PWR",lp:"W 3-Loop",ref:2644,up:0.202,cap:0.2,add:0,lat:25.44,lon:-80.33,mk:"Reg."},
-{n:"Turkey Point 4",s:"FL",t:"PWR",lp:"W 3-Loop",ref:2644,up:0.202,cap:0.2,add:0,lat:25.44,lon:-80.33,mk:"Reg."},
-{n:"Hatch 1",s:"GA",t:"BWR",lp:"GE BWR/4",ref:2804,up:0.151,cap:0.2,add:119,lat:31.93,lon:-82.34,mk:"Reg."},
-{n:"Hatch 2",s:"GA",t:"BWR",lp:"GE BWR/4",ref:2804,up:0.151,cap:0.2,add:119,lat:31.93,lon:-82.34,mk:"Reg."},
-{n:"Vogtle 1",s:"GA",t:"PWR",lp:"W 4-Loop",ref:3626,up:0.063,cap:0.09,add:93,lat:33.14,lon:-81.76,mk:"Reg."},
-{n:"Vogtle 2",s:"GA",t:"PWR",lp:"W 4-Loop",ref:3626,up:0.063,cap:0.09,add:93,lat:33.14,lon:-81.76,mk:"Reg."},
-{n:"Vogtle 3",s:"GA",t:"PWR",lp:"W AP1000",ref:3400,up:0,cap:0,add:0,lat:33.14,lon:-81.76,mk:"Reg."},
-{n:"Vogtle 4",s:"GA",t:"PWR",lp:"W AP1000",ref:3400,up:0,cap:0,add:0,lat:33.14,lon:-81.76,mk:"Reg."},
-{n:"Braidwood 1",s:"IL",t:"PWR",lp:"W 4-Loop",ref:3645,up:0.067,cap:0.09,add:79,lat:41.24,lon:-88.23,mk:"Merch."},
-{n:"Braidwood 2",s:"IL",t:"PWR",lp:"W 4-Loop",ref:3645,up:0.067,cap:0.09,add:79,lat:41.24,lon:-88.23,mk:"Merch."},
-{n:"Byron 1",s:"IL",t:"PWR",lp:"W 4-Loop",ref:3645,up:0.067,cap:0.09,add:79,lat:42.08,lon:-89.28,mk:"Merch."},
-{n:"Byron 2",s:"IL",t:"PWR",lp:"W 4-Loop",ref:3645,up:0.067,cap:0.09,add:79,lat:42.08,lon:-89.28,mk:"Merch."},
-{n:"Clinton",s:"IL",t:"BWR",lp:"GE BWR/6",ref:3473,up:0.2,cap:0.2,add:0,lat:40.17,lon:-88.83,mk:"Merch."},
-{n:"Dresden 2",s:"IL",t:"BWR",lp:"GE BWR/3",ref:2957,up:0.17,cap:0.2,add:76,lat:41.39,lon:-88.27,mk:"Merch."},
-{n:"Dresden 3",s:"IL",t:"BWR",lp:"GE BWR/3",ref:2957,up:0.17,cap:0.2,add:76,lat:41.39,lon:-88.27,mk:"Merch."},
-{n:"LaSalle 1",s:"IL",t:"BWR",lp:"GE BWR/5",ref:3546,up:0.067,cap:0.2,add:443,lat:41.24,lon:-88.67,mk:"Merch."},
-{n:"LaSalle 2",s:"IL",t:"BWR",lp:"GE BWR/5",ref:3546,up:0.067,cap:0.2,add:443,lat:41.24,lon:-88.67,mk:"Merch."},
-{n:"Quad Cities 1",s:"IL",t:"BWR",lp:"GE BWR/3",ref:2957,up:0.178,cap:0.2,add:55,lat:41.73,lon:-90.31,mk:"Merch."},
-{n:"Quad Cities 2",s:"IL",t:"BWR",lp:"GE BWR/3",ref:2957,up:0.178,cap:0.2,add:55,lat:41.73,lon:-90.31,mk:"Merch."},
-{n:"Wolf Creek",s:"KS",t:"PWR",lp:"W 4-Loop",ref:3565,up:0.045,cap:0.09,add:154,lat:38.24,lon:-95.69,mk:"Reg."},
-{n:"River Bend",s:"LA",t:"BWR",lp:"GE BWR/6",ref:3091,up:0.068,cap:0.2,add:383,lat:30.76,lon:-91.33,mk:"Reg."},
-{n:"Waterford 3",s:"LA",t:"PWR",lp:"CE 2-Loop",ref:3716,up:0.096,cap:0.18,add:284,lat:30,lon:-90.47,mk:"Reg."},
-{n:"Calvert Cliffs 1",s:"MD",t:"PWR",lp:"CE 2-Loop",ref:2737,up:0.07,cap:0.18,add:282,lat:38.43,lon:-76.44,mk:"Merch."},
-{n:"Calvert Cliffs 2",s:"MD",t:"PWR",lp:"CE 2-Loop",ref:2737,up:0.07,cap:0.18,add:282,lat:38.43,lon:-76.44,mk:"Merch."},
-{n:"D.C. Cook 1",s:"MI",t:"PWR",lp:"W 4-Loop",ref:3304,up:0.017,cap:0.09,add:249,lat:41.98,lon:-86.56,mk:"Reg."},
-{n:"D.C. Cook 2",s:"MI",t:"PWR",lp:"W 4-Loop",ref:3468,up:0.017,cap:0.09,add:144,lat:41.98,lon:-86.56,mk:"Reg."},
-{n:"Fermi 2",s:"MI",t:"BWR",lp:"GE BWR/4",ref:3486,up:0.04,cap:0.2,add:536,lat:41.96,lon:-83.26,mk:"Merch."},
-{n:"Monticello",s:"MN",t:"BWR",lp:"GE BWR/3",ref:2004,up:0.2,cap:0.2,add:0,lat:45.33,lon:-93.85,mk:"Reg."},
-{n:"Prairie Island 1",s:"MN",t:"PWR",lp:"W 2-Loop",ref:1677,up:0.016,cap:0.185,add:279,lat:44.62,lon:-92.63,mk:"Reg."},
-{n:"Prairie Island 2",s:"MN",t:"PWR",lp:"W 2-Loop",ref:1677,up:0.016,cap:0.185,add:279,lat:44.62,lon:-92.63,mk:"Reg."},
-{n:"Grand Gulf",s:"MS",t:"BWR",lp:"GE BWR/6",ref:4408,up:0.15,cap:0.2,add:191,lat:32,lon:-91.05,mk:"Reg."},
-{n:"Callaway",s:"MO",t:"PWR",lp:"W 4-Loop",ref:3565,up:0.045,cap:0.09,add:154,lat:38.76,lon:-91.78,mk:"Reg."},
-{n:"Brunswick 1",s:"NC",t:"BWR",lp:"GE BWR/4",ref:2923,up:0.208,cap:0.2,add:0,lat:33.96,lon:-78.01,mk:"Reg."},
-{n:"Brunswick 2",s:"NC",t:"BWR",lp:"GE BWR/4",ref:2923,up:0.208,cap:0.2,add:0,lat:33.96,lon:-78.01,mk:"Reg."},
-{n:"McGuire 1",s:"NC",t:"PWR",lp:"W 4-Loop",ref:3411,up:0.017,cap:0.09,add:245,lat:35.43,lon:-80.95,mk:"Reg."},
-{n:"McGuire 2",s:"NC",t:"PWR",lp:"W 4-Loop",ref:3411,up:0.017,cap:0.09,add:245,lat:35.43,lon:-80.95,mk:"Reg."},
-{n:"Shearon Harris",s:"NC",t:"PWR",lp:"W 3-Loop",ref:2900,up:0.062,cap:0.2,add:378,lat:35.63,lon:-78.96,mk:"Reg."},
-{n:"Cooper",s:"NE",t:"BWR",lp:"GE BWR/4",ref:2419,up:0.016,cap:0.2,add:661,lat:40.36,lon:-95.64,mk:"Reg."},
-{n:"Seabrook",s:"NH",t:"PWR",lp:"W 4-Loop",ref:3648,up:0.07,cap:0.09,add:69,lat:42.9,lon:-70.85,mk:"Merch."},
-{n:"Hope Creek",s:"NJ",t:"BWR",lp:"GE BWR/4",ref:3902,up:0.185,cap:0.2,add:50,lat:39.47,lon:-75.54,mk:"Merch."},
-{n:"Salem 1",s:"NJ",t:"PWR",lp:"W 4-Loop",ref:3459,up:0.034,cap:0.09,add:186,lat:39.46,lon:-75.54,mk:"Merch."},
-{n:"Salem 2",s:"NJ",t:"PWR",lp:"W 4-Loop",ref:3459,up:0.014,cap:0.09,add:259,lat:39.46,lon:-75.54,mk:"Merch."},
-{n:"FitzPatrick",s:"NY",t:"BWR",lp:"GE BWR/4",ref:2536,up:0.04,cap:0.2,add:390,lat:43.52,lon:-76.4,mk:"Merch."},
-{n:"Ginna",s:"NY",t:"PWR",lp:"W 2-Loop",ref:1775,up:0.168,cap:0.185,add:26,lat:43.28,lon:-77.31,mk:"Merch."},
-{n:"Nine Mile Pt 1",s:"NY",t:"BWR",lp:"GE BWR/2",ref:1850,up:0,cap:0.2,add:370,lat:43.52,lon:-76.41,mk:"Merch."},
-{n:"Nine Mile Pt 2",s:"NY",t:"BWR",lp:"GE BWR/5",ref:3988,up:0.199,cap:0.2,add:0,lat:43.52,lon:-76.41,mk:"Merch."},
-{n:"Davis-Besse",s:"OH",t:"PWR",lp:"B&W 2-Loop",ref:2817,up:0.016,cap:0.02,add:0,lat:41.6,lon:-83.09,mk:"Merch."},
-{n:"Perry 1",s:"OH",t:"BWR",lp:"GE BWR/6",ref:3756,up:0.05,cap:0.2,add:537,lat:41.8,lon:-81.14,mk:"Merch."},
-{n:"Beaver Valley 1",s:"PA",t:"PWR",lp:"W 3-Loop",ref:2900,up:0.095,cap:0.2,add:278,lat:40.62,lon:-80.43,mk:"Merch."},
-{n:"Beaver Valley 2",s:"PA",t:"PWR",lp:"W 3-Loop",ref:2900,up:0.095,cap:0.2,add:278,lat:40.62,lon:-80.43,mk:"Merch."},
-{n:"Limerick 1",s:"PA",t:"BWR",lp:"GE BWR/4",ref:3515,up:0.067,cap:0.2,add:439,lat:40.22,lon:-75.59,mk:"Merch."},
-{n:"Limerick 2",s:"PA",t:"BWR",lp:"GE BWR/4",ref:3515,up:0.067,cap:0.2,add:439,lat:40.22,lon:-75.59,mk:"Merch."},
-{n:"Peach Bottom 2",s:"PA",t:"BWR",lp:"GE BWR/4",ref:4016,up:0.219,cap:0.2,add:0,lat:39.76,lon:-76.27,mk:"Merch."},
-{n:"Peach Bottom 3",s:"PA",t:"BWR",lp:"GE BWR/4",ref:4016,up:0.219,cap:0.2,add:0,lat:39.76,lon:-76.27,mk:"Merch."},
-{n:"Susquehanna 1",s:"PA",t:"BWR",lp:"GE BWR/4",ref:3952,up:0.197,cap:0.2,add:0,lat:41.09,lon:-76.15,mk:"Merch."},
-{n:"Susquehanna 2",s:"PA",t:"BWR",lp:"GE BWR/4",ref:3952,up:0.197,cap:0.2,add:0,lat:41.09,lon:-76.15,mk:"Merch."},
-{n:"Catawba 1",s:"SC",t:"PWR",lp:"W 4-Loop",ref:3469,up:0.017,cap:0.09,add:249,lat:35.05,lon:-81.07,mk:"Reg."},
-{n:"Catawba 2",s:"SC",t:"PWR",lp:"W 4-Loop",ref:3411,up:0,cap:0.09,add:307,lat:35.05,lon:-81.07,mk:"Reg."},
-{n:"Oconee 1",s:"SC",t:"PWR",lp:"B&W 2-Loop",ref:2568,up:0.016,cap:0.016,add:0,lat:34.79,lon:-82.9,mk:"Reg."},
-{n:"Oconee 2",s:"SC",t:"PWR",lp:"B&W 2-Loop",ref:2568,up:0.016,cap:0.016,add:0,lat:34.79,lon:-82.9,mk:"Reg."},
-{n:"Oconee 3",s:"SC",t:"PWR",lp:"B&W 2-Loop",ref:2568,up:0.016,cap:0.016,add:0,lat:34.79,lon:-82.9,mk:"Reg."},
-{n:"Robinson 2",s:"SC",t:"PWR",lp:"W 3-Loop",ref:2339,up:0.063,cap:0.2,add:302,lat:34.4,lon:-80.16,mk:"Reg."},
-{n:"Summer",s:"SC",t:"PWR",lp:"W 3-Loop",ref:2900,up:0.045,cap:0.2,add:430,lat:34.3,lon:-81.32,mk:"Reg."},
-{n:"Sequoyah 1",s:"TN",t:"PWR",lp:"W 4-Loop",ref:3455,up:0.013,cap:0.09,add:263,lat:35.23,lon:-85.09,mk:"Reg."},
-{n:"Sequoyah 2",s:"TN",t:"PWR",lp:"W 4-Loop",ref:3455,up:0.013,cap:0.09,add:263,lat:35.23,lon:-85.09,mk:"Reg."},
-{n:"Watts Bar 1",s:"TN",t:"PWR",lp:"W 4-Loop",ref:3459,up:0.014,cap:0.09,add:259,lat:35.6,lon:-84.79,mk:"Reg."},
-{n:"Watts Bar 2",s:"TN",t:"PWR",lp:"W 4-Loop",ref:3459,up:0.014,cap:0.09,add:259,lat:35.6,lon:-84.79,mk:"Reg."},
-{n:"Comanche Peak 1",s:"TX",t:"PWR",lp:"W 4-Loop",ref:3612,up:0.06,cap:0.09,add:104,lat:32.3,lon:-97.79,mk:"Merch."},
-{n:"Comanche Peak 2",s:"TX",t:"PWR",lp:"W 4-Loop",ref:3612,up:0.06,cap:0.09,add:103,lat:32.3,lon:-97.79,mk:"Merch."},
-{n:"South Texas 1",s:"TX",t:"PWR",lp:"W 4-Loop",ref:3853,up:0.014,cap:0.09,add:289,lat:28.8,lon:-96.05,mk:"Merch."},
-{n:"South Texas 2",s:"TX",t:"PWR",lp:"W 4-Loop",ref:3853,up:0.014,cap:0.09,add:289,lat:28.8,lon:-96.05,mk:"Merch."},
-{n:"North Anna 1",s:"VA",t:"PWR",lp:"W 3-Loop",ref:2940,up:0.059,cap:0.2,add:392,lat:38.06,lon:-77.79,mk:"Reg."},
-{n:"North Anna 2",s:"VA",t:"PWR",lp:"W 3-Loop",ref:2940,up:0.059,cap:0.2,add:392,lat:38.06,lon:-77.79,mk:"Reg."},
-{n:"Surry 1",s:"VA",t:"PWR",lp:"W 3-Loop",ref:2587,up:0.06,cap:0.2,add:343,lat:37.17,lon:-76.7,mk:"Reg."},
-{n:"Surry 2",s:"VA",t:"PWR",lp:"W 3-Loop",ref:2587,up:0.06,cap:0.2,add:343,lat:37.17,lon:-76.7,mk:"Reg."},
-{n:"Columbia Generating",s:"WA",t:"BWR",lp:"GE BWR/5",ref:3544,up:0.059,cap:0.2,add:470,lat:46.47,lon:-119.33,mk:"Reg."},
-{n:"Point Beach 1",s:"WI",t:"PWR",lp:"W 2-Loop",ref:1800,up:0.186,cap:0.185,add:0,lat:44.28,lon:-87.54,mk:"Reg."},
-{n:"Point Beach 2",s:"WI",t:"PWR",lp:"W 2-Loop",ref:1800,up:0.186,cap:0.185,add:0,lat:44.28,lon:-87.54,mk:"Reg."}];
-var PP=[{n:"Palisades Nuclear Plant",c:"Restart",tc:"PWR",mw:805,dv:"Holtec",cu:"Grid",dt:"Mid-2026",st:"MI",lat:42.3222,lon:-86.3153,nt:"Passivation complete Apr 2026; targeting restart"},
-{n:"Crane Clean Energy (TMI-1)",c:"Restart",tc:"PWR",mw:835,dv:"Constellation",cu:"Microsoft",dt:"2028",st:"PA",lat:40.1531,lon:-76.7247,nt:"NRC review ongoing; 65% staffed"},
-{n:"Duane Arnold",c:"Restart",tc:"BWR",mw:615,dv:"NextEra",cu:"Google",dt:"2029",st:"IA",lat:42.1006,lon:-91.7776,nt:"Google 25-yr PPA; FERC approved"},
-{n:"Kewaunee",c:"Restart",tc:"PWR",mw:556,dv:"TBD",cu:"TBD",dt:"TBD",st:"WI",lat:44.343,lon:-87.536,nt:"NRC Notice of Intent filed Jan 2026"},
-{n:"TerraPower Natrium",c:"ARDP",tc:"SFR",mw:345,dv:"TerraPower",cu:"PacifiCorp/Meta",dt:"2030",st:"WY",lat:41.7927,lon:-110.5377,nt:"NRC construction permit issued Mar 4 2026"},
-{n:"X-energy Xe-100 (Dow)",c:"ARDP",tc:"HTGR",mw:320,dv:"X-energy/Dow",cu:"Dow Chemical",dt:"Early 2030s",st:"TX",lat:28.4141,lon:-96.7133,nt:"NRC CP application filed Mar 2025"},
-{n:"Kairos Hermes 1",c:"ARDP",tc:"FHR",mw:0,dv:"Kairos Power",cu:"Demo",dt:"2026",st:"TN",lat:35.931,lon:-84.31,nt:"Under construction; HALEU contract finalized"},
-{n:"Kairos Hermes 2",c:"ARDP",tc:"FHR",mw:100,dv:"Kairos Power",cu:"Google/TVA",dt:"~2029",st:"TN",lat:35.933,lon:-84.315,nt:"CP issued Nov 2024; env assessment complete"},
-{n:"BWXT BANR",c:"ARDP",tc:"HTGR",mw:50,dv:"BWXT",cu:"DOE/Wyoming",dt:"TBD",st:"WY",lat:41.14,lon:-104.82,nt:"ARDP risk-reduction; WY evaluation complete"},
-{n:"TVA Clinch River",c:"SMR New Build",tc:"BWRX-300",mw:300,dv:"TVA/GE-Hitachi",cu:"Grid",dt:"~2033",st:"TN",lat:35.891,lon:-84.389,nt:"$400M DOE grant; NRC review"},
-{n:"Holtec Pioneer SMR",c:"SMR New Build",tc:"SMR-300",mw:680,dv:"Holtec",cu:"Grid",dt:"Early 2030s",st:"MI",lat:42.325,lon:-86.318,nt:"$400M DOE grant; NRC CP Part 1 filed Dec 2025"},
-{n:"Cascade (Amazon)",c:"SMR New Build",tc:"Xe-100",mw:960,dv:"X-energy",cu:"Amazon",dt:"2030s",st:"WA",lat:46.55,lon:-119.25,nt:"Amazon $500M investment; 4-12 units"},
-{n:"Duke Belews Creek",c:"SMR New Build",tc:"TBD",mw:600,dv:"Duke Energy",cu:"Grid",dt:"2036-37",st:"NC",lat:36.244,lon:-80.059,nt:"6 designs under evaluation"},
-{n:"Dominion North Anna",c:"SMR New Build",tc:"SMR TBD",mw:300,dv:"Dominion",cu:"Grid",dt:"Mid-2030s",st:"VA",lat:38.06,lon:-77.79,nt:"Site evaluation phase"},
-{n:"AEP Indiana",c:"SMR New Build",tc:"BWRX-300",mw:300,dv:"AEP",cu:"Grid",dt:"2030s",st:"IN",lat:37.93,lon:-87.12,nt:"Part of TVA DOE grant coalition"},
-{n:"Creekstone Delta",c:"SMR New Build",tc:"TBD",mw:2000,dv:"Creekstone",cu:"Data centers",dt:"TBD",st:"UT",lat:39.352,lon:-112.577,nt:"MOU for 2 GW data center campus"},
-{n:"Google/Elementl Power",c:"SMR New Build",tc:"TBD",mw:1800,dv:"Elementl Power",cu:"Google",dt:"2030s",st:"US",lat:39.5,lon:-98.35,nt:"3 greenfield sites at 600MW each"},
-{n:"Holtec Oyster Creek",c:"SMR New Build",tc:"SMR-300",mw:600,dv:"Holtec",cu:"Grid",dt:"2030s",st:"NJ",lat:39.814,lon:-74.206,nt:"Aspirational; site decommissioning thru 2029"},
-{n:"NANO Nuclear KRONOS",c:"SMR New Build",tc:"HTGR",mw:15,dv:"NANO Nuclear",cu:"U of Illinois",dt:"TBD",st:"IL",lat:40.116,lon:-88.243,nt:"Acquired USNC assets; demo continues"},
-{n:"V.C. Summer 2&3",c:"Large New Build",tc:"AP1000",mw:2200,dv:"Westinghouse",cu:"TBD",dt:"TBD",st:"SC",lat:34.296,lon:-81.32,nt:"Feasibility phase under $80B framework"},
-{n:"Fermi America",c:"Large New Build",tc:"AP1000",mw:4400,dv:"Westinghouse",cu:"TBD",dt:"Early 2030s",st:"TX",lat:35.199,lon:-101.845,nt:"Amarillo site; part of AP1000 fleet"},
-{n:"NYPA New Nuclear",c:"Large New Build",tc:"TBD",mw:1000,dv:"NYPA",cu:"Grid",dt:"2030s",st:"NY",lat:42.65,lon:-73.75,nt:"Gov. Hochul 1-5 GW target"},
-{n:"Valar Atomics",c:"DOE Pilot",tc:"HTGR",mw:0.1,dv:"Valar Atomics",cu:"DOE",dt:"Jul 2026",st:"WY",lat:41.79,lon:-110.53,nt:"Cold criticality achieved Nov 2025; building Ward250 in Utah"},
-{n:"Aalo Atomics",c:"DOE Pilot",tc:"Sodium",mw:0,dv:"Aalo Atomics",cu:"DOE/INL",dt:"Jul 2026",st:"ID",lat:43.515,lon:-112.945,nt:"FDR complete Jan 2026; on track for criticality"},
-{n:"Antares MARK-0",c:"DOE Pilot",tc:"Heat pipe",mw:0,dv:"Antares Nuclear",cu:"DOE/INL",dt:"Jul 2026",st:"ID",lat:43.518,lon:-112.948,nt:"First DOE safety approval Apr 2026; TRISO fab underway"},
-{n:"Oklo Aurora",c:"DOE Pilot",tc:"Fast reactor",mw:75,dv:"Oklo Inc.",cu:"DOE/INL",dt:"2027-28",st:"ID",lat:43.52,lon:-112.95,nt:"Broke ground Sep 2025; Kiewit as constructor"},
-{n:"Oklo Pluto",c:"DOE Pilot",tc:"Fast reactor",mw:0,dv:"Oklo Inc.",cu:"DOE/INL",dt:"TBD",st:"ID",lat:43.522,lon:-112.952,nt:"Test reactor for fuel/component dev"},
-{n:"Atomic Alchemy VIPR",c:"DOE Pilot",tc:"LWR",mw:0,dv:"Oklo/Alchemy",cu:"DOE/INL",dt:"TBD",st:"ID",lat:43.524,lon:-112.954,nt:"15 MWt isotope production reactor"},
-{n:"Radiant Kaleidos",c:"DOE Pilot",tc:"HTGR",mw:1.2,dv:"Radiant Ind.",cu:"DOE/INL",dt:"2026",st:"ID",lat:43.526,lon:-112.956,nt:"DOME testing at INL; $300M+ Series D"},
-{n:"Deep Fission DFBR-1",c:"DOE Pilot",tc:"Underground PWR",mw:15,dv:"Deep Fission",cu:"DOE",dt:"2026",st:"KS",lat:37.34,lon:-95.262,nt:"Broke ground Parsons KS Dec 2025"},
-{n:"Last Energy PWR-20",c:"DOE Pilot",tc:"PWR",mw:5,dv:"Last Energy",cu:"Texas A&M",dt:"2026",st:"TX",lat:30.628,lon:-96.464,nt:"$100M Series C; fuel procured"},
-{n:"Natura MSR-1",c:"DOE Pilot",tc:"Molten salt",mw:0,dv:"Natura Res.",cu:"Abilene Christian",dt:"2026",st:"TX",lat:32.449,lon:-99.733,nt:"NRC CP issued Sep 2024; first MSR ever licensed"},
-{n:"Terrestrial TETRA",c:"DOE Pilot",tc:"IMSR",mw:0,dv:"Terrestrial",cu:"DOE/INL",dt:"TBD",st:"ID",lat:43.528,lon:-112.958,nt:"IMSR testing program"},
-{n:"Westinghouse eVinci",c:"DOE Pilot",tc:"Heat pipe",mw:5,dv:"Westinghouse",cu:"DOE/INL",dt:"2027",st:"ID",lat:43.534,lon:-112.964,nt:"Microreactor for remote/defense"},
-{n:"MARVEL",c:"DOE Pilot",tc:"NaK",mw:0.02,dv:"INL/DOE",cu:"R&D (AWS)",dt:"2026-28",st:"ID",lat:43.53,lon:-112.96,nt:"Assembly at TREAT facility; AWS end-user"},
-{n:"Project Pele",c:"Military",tc:"HTGR",mw:5,dv:"BWXT",cu:"US Army",dt:"2026",st:"ID",lat:43.5154,lon:-112.9452,nt:"Assembly began Feb 2025; transport to INL"},
-{n:"Janus Program",c:"Military",tc:"Microreactor",mw:5,dv:"TBD",cu:"US Army",dt:"2028-30",st:"AK",lat:64.663,lon:-147.102,nt:"Eielson AFB; Army regulatory authority"},
-{n:"Amazon-Talen Susquehanna",c:"Big Tech PPA",tc:"BWR (existing)",mw:960,dv:"Talen Energy",cu:"Amazon",dt:"Active",st:"PA",lat:41.095,lon:-76.155,nt:"Direct PPA for data center campus"},
-{n:"Meta-Constellation",c:"Big Tech PPA",tc:"Existing fleet",mw:0,dv:"Constellation",cu:"Meta",dt:"Active",st:"IL",lat:41.24,lon:-88.23,nt:"6.6 GW announced Jan 2026"},
-{n:"Switch-Oklo (12 GW)",c:"Big Tech PPA",tc:"Aurora",mw:12000,dv:"Oklo",cu:"Switch",dt:"2030s",st:"NV",lat:36.04,lon:-115.17,nt:"Framework agreement; aspirational"},
-{n:"ENTRA1-NuScale (6 GW)",c:"Big Tech PPA",tc:"NuScale VOYGR",mw:6000,dv:"NuScale",cu:"ENTRA1/TVA",dt:"2030s",st:"TN",lat:35.75,lon:-84.0,nt:"Framework via Japan deal"}];
-var SR={"AL": {"m": "None", "e": "Clear"}, "AR": {"m": "None", "e": "Clear"}, "AZ": {"m": "None", "e": "Clear"}, "CA": {"m": "HLW Repository Req.", "e": "Restricted"}, "CT": {"m": "HLW Repository Req.", "e": "Restricted"}, "FL": {"m": "None", "e": "Clear"}, "GA": {"m": "None", "e": "Clear"}, "IL": {"m": "Repealed", "e": "Clear"}, "KS": {"m": "None", "e": "Clear"}, "LA": {"m": "None", "e": "Mixed"}, "MD": {"m": "None", "e": "Clear"}, "MI": {"m": "None", "e": "Clear"}, "MN": {"m": "Certificate-of-Need Ban", "e": "Restricted"}, "MO": {"m": "None", "e": "Clear"}, "MS": {"m": "None", "e": "Clear"}, "NC": {"m": "None", "e": "Clear"}, "NE": {"m": "None", "e": "Clear"}, "NH": {"m": "None", "e": "Clear"}, "NJ": {"m": "Coastal Limits", "e": "Mixed"}, "NY": {"m": "LIPA Area Ban", "e": "Mixed"}, "OH": {"m": "None", "e": "Clear"}, "PA": {"m": "None", "e": "Clear"}, "SC": {"m": "None", "e": "Clear"}, "TN": {"m": "None", "e": "Clear"}, "TX": {"m": "None", "e": "Mixed"}, "VA": {"m": "None", "e": "Clear"}, "WA": {"m": "None", "e": "Mixed"}, "WI": {"m": "Repealed", "e": "Clear"}};
-var FP={"1": "AL", "2": "AK", "4": "AZ", "5": "AR", "6": "CA", "8": "CO", "9": "CT", "10": "DE", "12": "FL", "13": "GA", "15": "HI", "16": "ID", "17": "IL", "18": "IN", "19": "IA", "20": "KS", "21": "KY", "22": "LA", "23": "ME", "24": "MD", "25": "MA", "26": "MI", "27": "MN", "28": "MS", "29": "MO", "30": "MT", "31": "NE", "32": "NV", "33": "NH", "34": "NJ", "35": "NM", "36": "NY", "37": "NC", "38": "ND", "39": "OH", "40": "OK", "41": "OR", "42": "PA", "44": "RI", "45": "SC", "46": "SD", "47": "TN", "48": "TX", "49": "UT", "50": "VT", "51": "VA", "53": "WA", "54": "WV", "55": "WI", "56": "WY"};
-var CC={"Restart":"#E8733A","ARDP":"#26A69A","SMR New Build":"#AB47BC","DOE Pilot":"#C4A046","Military":"#8BC34A","Big Tech PPA":"#42A5F5","Large New Build":"#EF5350"};
-function App(){
-  var _a=uS(null),topo=_a[0],setTopo=_a[1];var _b=uS(null),sel=_b[0],setSel=_b[1];
-  var _c=uS(null),hov=_c[0],setHov=_c[1];var _d=uS({x:0,y:0}),hp=_d[0],setHp=_d[1];
-  var _e=uS("fleet"),tab=_e[0],setTab=_e[1];
-  var _f=uS({type:"All",mk:"All",hr:"All"}),filt=_f[0],setFilt=_f[1];
-  var _g=uS("All"),pCat=_g[0],setPCat=_g[1];
-  var _z=uS({k:1,x:0,y:0}),zm=_z[0],setZm=_z[1];
-  var mr=uR(null);var dragging=uR(false);var dragStart=uR({x:0,y:0});
-  var proj=uM(function(){return d3.geoAlbersUsa().scale(1080).translate([476,296])},[]);
-  var path=uM(function(){return d3.geoPath().projection(proj)},[proj]);
-  uE(function(){fetch("https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json").then(function(r){return r.json()}).then(setTopo)},[]);
-  var sts=uM(function(){return topo?topojson.feature(topo,topo.objects.states).features:[]},[topo]);
-  var fUp=uM(function(){return UP.filter(function(r){if(filt.type!=="All"&&r.t!==filt.type)return false;if(filt.mk!=="All"&&r.mk.indexOf(filt.mk.slice(0,3))!==0)return false;if(filt.hr==="Headroom"&&r.add===0)return false;if(filt.hr==="Maxed"&&r.add>0)return false;return true})},[filt]);
-  var sites=uM(function(){var m={};fUp.forEach(function(r){var k=r.lat+"_"+r.lon;if(!m[k])m[k]={lat:r.lat,lon:r.lon,ps:[],add:0,st:r.s};m[k].ps.push(r);m[k].add+=r.add});return Object.values(m)},[fUp]);
-  var fPP=uM(function(){return pCat==="All"?PP:PP.filter(function(p){return p.c===pCat})},[pCat]);
-  var mx=uM(function(){var v=sites.map(function(s){return s.add});v.push(1);return Math.max.apply(null,v)},[sites]);
-  var st=uM(function(){var t=fUp.reduce(function(a,r){return a+r.add},0);return{u:fUp.length,t:t,gwe:(t/3/1000).toFixed(1),hr:fUp.filter(function(r){return r.add>0}).length,pp:PP.length,ppMW:PP.reduce(function(a,p){return a+p.mw},0)}},[fUp]);
-  function Btn(p){return h("button",{className:"b "+(p.on?"bo":"bf")+(p.gold?" bg":""),onClick:p.onClick},p.children)}
-  function doHov(tp,data,ev){setHov(Object.assign({type:tp},data));if(mr.current){var b=mr.current.getBoundingClientRect();setHp({x:ev.clientX-b.left,y:ev.clientY-b.top})}}
-  function onWheel(ev){ev.preventDefault();var d=ev.deltaY>0?0.85:1.18;var nk=Math.max(0.5,Math.min(8,zm.k*d));if(mr.current){var b=mr.current.getBoundingClientRect();var mx=ev.clientX-b.left;var my=ev.clientY-b.top;var nx=mx-(mx-zm.x)*(nk/zm.k);var ny=my-(my-zm.y)*(nk/zm.k);setZm({k:nk,x:nx,y:ny})}else{setZm({k:nk,x:zm.x,y:zm.y})}}
-  function onMD(ev){dragging.current=true;dragStart.current={x:ev.clientX-zm.x,y:ev.clientY-zm.y}}
-  function onMM(ev){if(!dragging.current)return;setZm({k:zm.k,x:ev.clientX-dragStart.current.x,y:ev.clientY-dragStart.current.y})}
-  function onMU(){dragging.current=false}
-  var svgK=[h("rect",{key:"bg",width:960,height:600,fill:"#2D2D2D"})];
-  sts.forEach(function(f,i){var ab=FP[String(f.id)];var hasSite=fUp.some(function(r){return r.s===ab})||PP.some(function(p){return p.st===ab});svgK.push(h("path",{key:"s"+i,d:path(f)||"",fill:hasSite?"#3D3D3D":"#333",stroke:"#555",strokeWidth:.5}))});
-  if(tab==="fleet"){sites.slice().sort(function(a,b){return b.add-a.add}).forEach(function(s,i){var pt=proj([s.lon,s.lat]);if(!pt)return;var has=s.add>0,rad=has?3+s.add/mx*7:2.5;var col=has?"#C4A046":"#777";var isSel=sel&&sel.type==="up"&&sel.lat===s.lat&&sel.lon===s.lon;var k=[];if(isSel)k.push(h("circle",{key:"sel",cx:pt[0],cy:pt[1],r:rad+5,fill:"none",stroke:"#C4A046",strokeWidth:2,strokeDasharray:"4,2",style:{animation:"pu 2s infinite"}}));k.push(h("circle",{key:"d",cx:pt[0],cy:pt[1],r:rad,fill:col,stroke:"#2D2D2D",strokeWidth:1,opacity:isSel?1:.88}));if(has&&rad>5)k.push(h("circle",{key:"r",cx:pt[0],cy:pt[1],r:rad*.6,fill:"none",stroke:"rgba(255,255,255,.2)",strokeWidth:.5}));svgK.push(h("g",{key:"u"+i,style:{cursor:"pointer"},onClick:function(){setSel(Object.assign({type:"up"},s))},onMouseEnter:function(ev){doHov("up",s,ev)},onMouseLeave:function(){setHov(null)}},k))})}
-  if(tab==="pipeline"){fPP.forEach(function(p,i){var pt=proj([p.lon,p.lat]);if(!pt)return;var rad=Math.max(4,Math.min(12,3+Math.sqrt(Math.max(p.mw,1))/7));var cl=CC[p.c]||"#777";var isSel=sel&&sel.type==="pp"&&sel.n===p.n;var k=[];if(isSel)k.push(h("circle",{key:"sel",cx:pt[0],cy:pt[1],r:rad+6,fill:"none",stroke:cl,strokeWidth:2,strokeDasharray:"4,2"}));k.push(h("rect",{key:"m",x:pt[0]-rad/1.4,y:pt[1]-rad/1.4,width:rad*1.4,height:rad*1.4,fill:cl,stroke:"#2D2D2D",strokeWidth:1.5,opacity:isSel?1:.9,transform:"rotate(45 "+pt[0]+" "+pt[1]+")"}));svgK.push(h("g",{key:"p"+i,style:{cursor:"pointer"},onClick:function(){setSel(Object.assign({type:"pp"},p))},onMouseEnter:function(ev){doHov("pp",p,ev)},onMouseLeave:function(){setHov(null)}},k))})}
-  if(tab==="both"){sites.slice().sort(function(a,b){return b.add-a.add}).forEach(function(s,i){var pt=proj([s.lon,s.lat]);if(!pt)return;var has=s.add>0,rad=has?2+s.add/mx*5:2;svgK.push(h("circle",{key:"u"+i,cx:pt[0],cy:pt[1],r:rad,fill:has?"#C4A046":"#555",stroke:"#2D2D2D",strokeWidth:.8,opacity:.7}))});fPP.forEach(function(p,i){var pt=proj([p.lon,p.lat]);if(!pt)return;var rad=Math.max(3,Math.min(9,3+Math.sqrt(Math.max(p.mw,1))/9));var cl=CC[p.c]||"#777";svgK.push(h("rect",{key:"p"+i,x:pt[0]-rad/1.5,y:pt[1]-rad/1.5,width:rad*1.2,height:rad*1.2,fill:cl,stroke:"#2D2D2D",strokeWidth:1,opacity:.9,transform:"rotate(45 "+pt[0]+" "+pt[1]+")",style:{cursor:"pointer"},onClick:function(){setTab("pipeline");setSel(Object.assign({type:"pp"},p))},onMouseEnter:function(ev){doHov("pp",p,ev)},onMouseLeave:function(){setHov(null)}}))});}
-  var tooltip=null;
-  if(hov&&!sel){var tk=[];if(hov.type==="up"){tk.push(h("div",{key:"t",style:{fontSize:14,fontWeight:700,color:"#fff"}},hov.ps.length>1?hov.ps[0].n.replace(/ \d$/,"")+" ("+hov.ps.length+"u)":hov.ps[0].n));tk.push(h("div",{key:"s",style:{fontSize:11,color:"#aaa",fontFamily:"var(--m)",margin:"2px 0 4px"}},hov.st+"\u00b7"+hov.ps[0].t+"\u00b7"+hov.ps[0].lp));tk.push(h("div",{key:"v",style:{fontSize:13,fontWeight:700,color:hov.add>0?"#C4A046":"#777"}},hov.add>0?"+"+Math.round(hov.add).toLocaleString()+" MWt headroom":"Fully uprated"))}else{tk.push(h("div",{key:"t",style:{fontSize:14,fontWeight:700,color:"#fff"}},hov.n));tk.push(h("div",{key:"s",style:{fontSize:11,fontFamily:"var(--m)",margin:"2px 0 4px"}},h("span",{style:{color:CC[hov.c],fontWeight:700}},hov.c)," \u00b7 "+hov.tc+" \u00b7 "+hov.st));if(hov.mw>0)tk.push(h("div",{key:"m",style:{fontSize:13,fontWeight:700,color:CC[hov.c]}},hov.mw.toLocaleString()+" MW"));tk.push(h("div",{key:"d",style:{fontSize:11,color:"#999"}},hov.dv+"\u2192"+hov.cu));if(hov.nt)tk.push(h("div",{key:"n",style:{fontSize:10,color:"#C4A046",marginTop:4,fontStyle:"italic"}},hov.nt))}tooltip=h("div",{style:{position:"absolute",left:Math.min(hp.x+14,420),top:Math.max(hp.y-10,10),background:"#1A1A1A",border:"1px solid #C4A046",padding:"10px 14px",pointerEvents:"none",zIndex:10,minWidth:200,maxWidth:320,borderRadius:2}},tk)}
-  var legK=[];if(tab==="fleet"){legK.push(h("span",{key:"a",style:{display:"flex",alignItems:"center",gap:3}},h("span",{style:{width:8,height:8,borderRadius:"50%",background:"#C4A046",display:"inline-block"}})," Headroom"));legK.push(h("span",{key:"b",style:{display:"flex",alignItems:"center",gap:3}},h("span",{style:{width:8,height:8,borderRadius:"50%",background:"#777",display:"inline-block"}})," Maxed"));legK.push(h("span",{key:"c",style:{color:"#888"}},"size=MWt"))}
-  if(tab==="pipeline"||tab==="both"){Object.keys(CC).forEach(function(k){legK.push(h("span",{key:k,style:{display:"flex",alignItems:"center",gap:3}},h("span",{style:{width:7,height:7,background:CC[k],display:"inline-block",transform:"rotate(45deg)"}})," "+k))})}
-  var sideContent;
-  if(sel){var hdr=h("div",{key:"hdr",style:{display:"flex",justifyContent:"space-between",marginBottom:10}},h("div",null,h("h2",{style:{fontSize:16,fontWeight:700,margin:0,color:"#fff"}},sel.type==="up"?sel.ps[0].n.replace(/ \d$/,""):sel.n),h("p",{style:{fontSize:11,color:"#999",fontFamily:"var(--m)",margin:"3px 0 0"}},sel.type==="up"?(sel.st+"\u00b7"+sel.ps[0].t+"\u00b7"+sel.ps[0].lp):(h("span",null,h("span",{style:{color:CC[sel.c]||"",fontWeight:700}},sel.c||""),"\u00b7"+(sel.tc||"")+"\u00b7"+(sel.st||""))))),h("button",{onClick:function(){setSel(null)},style:{background:"none",border:"1px solid #555",color:"#999",padding:"2px 8px",cursor:"pointer",fontFamily:"var(--m)",fontSize:11}},"\u2715"));var body=[];
-    if(sel.type==="up"){var all=UP.filter(function(r){return r.lat===sel.lat&&r.lon===sel.lon});var tA=all.reduce(function(a,r){return a+r.add},0);var tR=all.reduce(function(a,r){return a+r.ref},0);var sr=SR[sel.st];if(sr){var ec=sr.e==="Clear"?"#4CAF50":sr.e==="Mixed"?"#C4A046":"#E53935";body.push(h("div",{key:"env",style:{display:"inline-block",padding:"3px 10px",fontSize:11,fontWeight:700,fontFamily:"var(--m)",border:"1px solid "+ec,color:ec,marginBottom:10}},sr.e.toUpperCase()+" PATH"))}if(sr&&sr.m!=="None"&&sr.m!=="Repealed")body.push(h("div",{key:"mor",style:{fontSize:12,color:"#E53935",fontWeight:700,marginBottom:8,padding:"4px 10px",borderLeft:"3px solid #E53935",background:"rgba(229,57,53,.08)"}},"Moratorium: "+sr.m));var rows=all.map(function(r,i){return h("tr",{key:i},h("td",{style:{padding:"3px 6px",borderBottom:"1px solid #444",fontWeight:700,fontSize:11,color:"#ddd"}},r.n),h("td",{style:{padding:"3px 6px",borderBottom:"1px solid #444",textAlign:"right",color:"#aaa"}},r.ref.toLocaleString()),h("td",{style:{padding:"3px 6px",borderBottom:"1px solid #444",textAlign:"right",color:"#aaa"}},(r.up*100).toFixed(1)+"%"),h("td",{style:{padding:"3px 6px",borderBottom:"1px solid #444",textAlign:"right",fontWeight:700,color:r.add>0?"#C4A046":"#666"}},"+"+Math.round(r.add)))});body.push(h("table",{key:"tbl",style:{width:"100%",borderCollapse:"collapse",fontSize:12,fontFamily:"var(--m)",marginBottom:12}},h("thead",null,h("tr",null,["Unit","Ref","Up%","+MWt"].map(function(x){return h("th",{key:x,style:{textAlign:x==="Unit"?"left":"right",padding:"3px 6px",borderBottom:"2px solid #C4A046",fontSize:10,color:"#C4A046"}},x)}))),h("tbody",null,rows)));if(tA>0)body.push(h("div",{key:"bar",style:{marginBottom:12}},h("div",{style:{display:"flex",justifyContent:"space-between",fontSize:10,fontFamily:"var(--m)",color:"#888",marginBottom:3}},h("span",null,"Current \u2192 Cap"),h("span",{style:{color:"#C4A046",fontWeight:700}},"+"+Math.round(tA).toLocaleString()+" MWt")),h("div",{style:{height:8,background:"#333",overflow:"hidden",borderRadius:1}},h("div",{style:{height:"100%",background:"linear-gradient(90deg,#666 0%,#666 "+tR/(tR+tA)*100+"%,#C4A046 "+tR/(tR+tA)*100+"%,#C4A046 100%)"}}))))}
-    else{[{l:"Developer",v:sel.dv},{l:"Customer",v:sel.cu},{l:"Technology",v:sel.tc},{l:"Capacity",v:sel.mw>0?sel.mw.toLocaleString()+" MW":"Demo/R&D"},{l:"Target",v:sel.dt},{l:"State",v:sel.st}].forEach(function(f,i){body.push(h("div",{key:i,style:{display:"flex",justifyContent:"space-between",padding:"6px 0",borderBottom:"1px solid #444",fontSize:12}},h("span",{style:{color:"#888",fontFamily:"var(--m)",fontSize:10,textTransform:"uppercase",letterSpacing:".08em"}},f.l),h("span",{style:{fontWeight:700,color:"#ddd",fontFamily:"var(--m)",textAlign:"right",maxWidth:180}},f.v)))});if(sel.nt)body.push(h("div",{key:"nt",style:{marginTop:10,padding:"8px 10px",background:"#333",borderLeft:"3px solid #C4A046",fontSize:11,color:"#ccc",lineHeight:1.5}},sel.nt))}
-    sideContent=h("div",{style:{padding:16}},hdr,body)}
-  else{var lk=[h("h3",{key:"hd",style:{fontSize:12,fontWeight:700,margin:"0 0 6px",textTransform:"uppercase",letterSpacing:".08em",color:"#C4A046"}},tab==="pipeline"?"Pipeline Projects ("+fPP.length+")":tab==="fleet"?"Fleet Uprate Opportunities":"All Projects"),h("div",{key:"hr",style:{borderBottom:"1px solid #555",marginBottom:8}})];
-    if(tab==="pipeline"||tab==="both"){fPP.slice().sort(function(a,b){return b.mw-a.mw}).forEach(function(p,i){lk.push(h("div",{key:"p"+i,className:"si",onClick:function(){setSel(Object.assign({type:"pp"},p))}},h("div",{style:{width:10,height:10,flexShrink:0,background:CC[p.c]||"#777",transform:"rotate(45deg)"}}),h("div",{style:{flex:1,minWidth:0}},h("div",{style:{fontSize:12,fontWeight:700,color:"#ddd"}},p.n),h("div",{style:{fontSize:10,color:"#888",fontFamily:"var(--m)"}},p.c+"\u00b7"+p.tc+"\u00b7"+p.dt)),p.mw>0?h("div",{style:{fontFamily:"var(--m)",fontSize:11,fontWeight:700,color:CC[p.c],flexShrink:0}},p.mw>=1000?(p.mw/1000).toFixed(1)+"GW":p.mw+"MW"):null))})}
-    if(tab==="fleet"){sites.filter(function(s){return s.add>0}).sort(function(a,b){return b.add-a.add}).slice(0,25).forEach(function(s,i){var nm=s.ps.length>1?s.ps[0].n.replace(/ \d$/,"")+" ("+s.ps.length+"u)":s.ps[0].n;lk.push(h("div",{key:"u"+i,className:"si",onClick:function(){setSel(Object.assign({type:"up"},s))},onMouseEnter:function(ev){doHov("up",s,ev)},onMouseLeave:function(){setHov(null)}},h("div",{style:{width:8,height:8,borderRadius:"50%",flexShrink:0,background:s.add>0?"#C4A046":"#666"}}),h("div",{style:{flex:1,minWidth:0}},h("div",{style:{fontSize:12,fontWeight:700,color:"#ddd"}},nm),h("div",{style:{fontSize:10,color:"#888",fontFamily:"var(--m)"}},s.st+"\u00b7"+s.ps[0].t+"\u00b7"+s.ps[0].mk)),h("div",{style:{fontFamily:"var(--m)",fontSize:11,fontWeight:700,color:"#C4A046",flexShrink:0}},"+"+Math.round(s.add).toLocaleString())))})}
-    sideContent=h("div",{style:{padding:12}},lk)}
-  var fb=[];if(tab==="fleet"){fb.push(h("span",{key:"fl",style:{color:"#888",fontFamily:"var(--m)",fontSize:10,marginRight:4}},"FILTER"));[{k:"type",o:["All","PWR","BWR"]},{k:"mk",o:["All","Reg.","Merch."]},{k:"hr",o:["All","Headroom","Maxed"]}].forEach(function(g){fb.push(h("div",{key:g.k,style:{display:"flex",gap:2}},g.o.map(function(v){return h(Btn,{key:v,on:filt[g.k]===v,onClick:function(){var nf={};Object.keys(filt).forEach(function(x){nf[x]=filt[x]});nf[g.k]=v;setFilt(nf)}},v)})))})}
-  if(tab==="pipeline"){fb.push(h("span",{key:"cl",style:{color:"#888",fontFamily:"var(--m)",fontSize:10,marginRight:4}},"CATEGORY"));var cats=["All"];Object.keys(CC).forEach(function(c){cats.push(c)});cats.forEach(function(c){fb.push(h(Btn,{key:c,on:pCat===c,onClick:function(){setPCat(c)}},c))})}
-  return h("div",{style:{minHeight:"100vh",background:"#2D2D2D"}},
-    h("header",{style:{background:"#1A1A1A",padding:"16px 32px",display:"flex",alignItems:"center",justifyContent:"space-between",borderBottom:"2px solid #C4A046"}},
-      h("div",null,
-        h("div",{style:{fontSize:11,fontFamily:"var(--m)",color:"#999",letterSpacing:".15em",textTransform:"uppercase",marginBottom:2}},"Kimley\u00bbHorn"),
-        h("h1",{style:{fontSize:22,fontWeight:700,color:"#fff",margin:0,letterSpacing:".03em"}},"Nuclear Task Force"),
-        h("p",{style:{fontSize:11,color:"#C4A046",margin:"2px 0 0",fontFamily:"var(--m)"}},"Uprate Potential & New Reactor Pipeline \u2014 Updated April 2026")),
-      h("div",{style:{display:"flex",gap:12,textAlign:"right"}},
-        [{l:"Fleet Units",v:st.u},{l:"Headroom MWt",v:st.t.toLocaleString()},{l:"\u2248 GWe",v:st.gwe},{l:"Pipeline",v:st.pp+" projects"}].map(function(s,i){return h("div",{key:i,style:{minWidth:70}},h("div",{style:{fontSize:9,color:"#888",fontFamily:"var(--m)",textTransform:"uppercase",letterSpacing:".1em"}},s.l),h("div",{style:{fontSize:18,fontWeight:700,color:"#C4A046",fontFamily:"var(--m)"}},s.v))}))),
-    h("div",{style:{maxWidth:1440,margin:"0 auto",padding:"16px 24px"}},
-      h("div",{style:{display:"flex",gap:8,alignItems:"center",marginBottom:12,flexWrap:"wrap"}},
-        h(Btn,{key:"f",on:tab==="fleet",gold:true,onClick:function(){setTab("fleet");setSel(null)}},"OPERATING FLEET"),
-        h(Btn,{key:"p",on:tab==="pipeline",gold:true,onClick:function(){setTab("pipeline");setSel(null)}},"NEW PROJECTS"),
-        h(Btn,{key:"b",on:tab==="both",gold:true,onClick:function(){setTab("both");setSel(null)}},"COMBINED"),
-        h("span",{style:{width:1,height:20,background:"#555",margin:"0 6px"}}),
-        fb.length>0?fb:null,
-        zm.k!==1?h("button",{className:"b bf",onClick:function(){setZm({k:1,x:0,y:0})},style:{marginLeft:8}},"Reset Zoom"):null),
-      h("div",{style:{display:"flex",gap:16,flexWrap:"wrap"}},
-        h("div",{ref:mr,style:{flex:"1 1 700px",background:"#2D2D2D",border:"1px solid #555",position:"relative",overflow:"hidden",cursor:zm.k>1?"grab":"default"},onWheel:onWheel,onMouseDown:onMD,onMouseMove:onMM,onMouseUp:onMU,onMouseLeave:onMU},
-          h("svg",{viewBox:"0 0 960 600",style:{width:"100%",display:"block"}},h("g",{transform:"translate("+zm.x+","+zm.y+") scale("+zm.k+")"},svgK)),
-          tooltip,
-          h("div",{style:{position:"absolute",bottom:8,left:8,display:"flex",gap:8,fontSize:10,fontFamily:"var(--m)",background:"rgba(26,26,26,.9)",padding:"5px 10px",border:"1px solid #555",flexWrap:"wrap",maxWidth:520,color:"#aaa",borderRadius:2}},legK),
-          h("div",{style:{position:"absolute",bottom:8,right:8,fontSize:9,color:"#666",fontFamily:"var(--m)"}},"Scroll to zoom \u00b7 Drag to pan")),
-        h("div",{style:{flex:"0 0 320px",maxHeight:600,overflowY:"auto",background:"#1A1A1A",border:"1px solid #555",borderRadius:2}},sideContent)),
-      h("footer",{style:{borderTop:"1px solid #555",paddingTop:10,marginTop:16,fontSize:10,color:"#666",textAlign:"center",fontFamily:"var(--m)"}},"Sources: INL/RPT-24-78810 \u00b7 NEI 2024 Survey \u00b7 DOE Liftoff (2024) \u00b7 NRC Construction Permits (Mar 2026) \u00b7 Kimley-Horn Nuclear Task Force")))}
+#!/usr/bin/env python3
+"""
+build_iso_geometry.py  --  Kimley-Horn Nuclear Task Force
+================================================================
+Regenerates the accurate ISO/RTO map geometry from the authoritative
+HIFLD "Control Areas" (balancing-authority) layer.
 
-ReactDOM.createRoot(document.getElementById("root")).render(h(App));
-</script>
-</body>
-</html>
+Produces two files consumed by index.html:
+
+    data/iso_rto.topojson   7 de-overlapped ISO/RTO regions (render geometry,
+                            object key "iso", ids = operator codes)
+    data/state_iso.json     accurate  state -> [markets]  lookup, computed by
+                            polygon intersection of each state with the clean
+                            balancing-authority geometry (>=4% of state area)
+
+WHY A BALANCING-AUTHORITY SOURCE
+--------------------------------
+ISO/RTO "membership" extents in some HIFLD layers are giant overlapping
+blobs that swallow whole regions -- unusable for a map. The balancing-
+authority operating territories are clean, non-overlapping, and are what
+people mean by "which market is this site in." The seven ISO/RTO balancing
+authorities are filtered out of the Control Areas layer and lightly
+de-overlapped at the seams.
+
+DATA SOURCE (stable PASDA mirror of HIFLD)
+------------------------------------------
+    .../pasda/HIFLD_FEMA/MapServer/26   (Control Areas)
+Each balancing authority is fetched individually (NAME LIKE filter, Esri
+JSON) because the bulk geojson export of this layer returns HTML errors.
+
+REQUIREMENTS
+------------
+    pip install shapely requests       (see requirements.txt)
+    npm  install -g mapshaper          (Node toolchain; build-time only)
+
+This is a BUILD-TIME tool. The weekly GitHub Action does NOT run it
+(geometry is static). Re-run only when an ISO/RTO footprint actually
+changes, then commit the regenerated data files:
+
+    python scripts/build_iso_geometry.py
+"""
+
+import json, os, subprocess, sys, tempfile, urllib.parse, urllib.request
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+DATA = os.path.normpath(os.path.join(HERE, "..", "data"))
+OUT_TOPO  = os.path.join(DATA, "iso_rto.topojson")
+OUT_STATE = os.path.join(DATA, "state_iso.json")
+
+PASDA = ("https://mapservices.pasda.psu.edu/server/rest/services/"
+         "pasda/HIFLD_FEMA/MapServer/26/query")
+
+# Balancing authorities that ARE the ISO/RTOs, keyed by operator code.
+BA_QUERY = {
+    "CAISO": "NAME LIKE '%CALIFORNIA ISO%'",
+    "ERCOT": "NAME LIKE '%ELECTRIC RELIABILITY COUNCIL OF TEXAS%'",
+    "ISONE": "NAME LIKE '%ISO NEW ENGLAND%'",
+    "MISO":  "NAME LIKE '%MIDCONTINENT INDEPENDENT%'",
+    "NYISO": "NAME LIKE '%NEW YORK INDEPENDENT%'",
+    "PJM":   "NAME LIKE '%PJM INTERCONNECTION%'",
+    "SPP":   "NAME LIKE '%SOUTHWEST POWER POOL%'",
+}
+
+# De-overlap priority: smaller / enclosed territories win at the seams, so they
+# are subtracted out of the larger ones first.
+PRIORITY = ["NYISO", "ISONE", "PJM", "ERCOT", "CAISO", "MISO", "SPP"]
+
+STATES_10M = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json"
+STATE_SHARE_MIN = 0.04   # min share of a state's area inside a market to count it
+
+FIPS2AB = {
+ "01":"AL","02":"AK","04":"AZ","05":"AR","06":"CA","08":"CO","09":"CT","10":"DE",
+ "12":"FL","13":"GA","15":"HI","16":"ID","17":"IL","18":"IN","19":"IA","20":"KS",
+ "21":"KY","22":"LA","23":"ME","24":"MD","25":"MA","26":"MI","27":"MN","28":"MS",
+ "29":"MO","30":"MT","31":"NE","32":"NV","33":"NH","34":"NJ","35":"NM","36":"NY",
+ "37":"NC","38":"ND","39":"OH","40":"OK","41":"OR","42":"PA","44":"RI","45":"SC",
+ "46":"SD","47":"TN","48":"TX","49":"UT","50":"VT","51":"VA","53":"WA","54":"WV",
+ "55":"WI","56":"WY",
+}
+
+
+def need(mod):
+    try:
+        return __import__(mod)
+    except ImportError:
+        sys.exit("Missing dependency '%s'. Run: pip install -r requirements.txt" % mod)
+
+
+def get_json(url):
+    req = urllib.request.Request(url, headers={"User-Agent": "KH-NTF-geometry-build/1.0"})
+    with urllib.request.urlopen(req, timeout=90) as r:
+        return json.loads(r.read().decode("utf-8", "replace"))
+
+
+def fetch_ba(where):
+    qs = urllib.parse.urlencode({
+        "where": where, "outFields": "NAME", "returnGeometry": "true",
+        "outSR": "4326", "f": "json",
+    })
+    return get_json(PASDA + "?" + qs)
+
+
+def esri_to_polygons(esri):
+    """Convert Esri polygon rings to a shapely (Multi)Polygon, honouring holes.
+
+    Esri encodes outer rings clockwise (signed area < 0) and holes counter-
+    clockwise; assign each hole to the outer ring that contains it.
+    """
+    from shapely.geometry import Polygon, MultiPolygon
+    from shapely.ops import unary_union
+    polys = []
+    for feat in esri.get("features", []):
+        rings = feat.get("geometry", {}).get("rings", [])
+        outers, holes = [], []
+        for ring in rings:
+            area2 = 0.0
+            for i in range(len(ring) - 1):
+                x1, y1 = ring[i]; x2, y2 = ring[i + 1]
+                area2 += x1 * y2 - x2 * y1
+            (outers if area2 < 0 else holes).append(ring)
+        if not outers:
+            outers = rings
+        shells = [Polygon(o) for o in outers]
+        for hole in holes:
+            hp = Polygon(hole)
+            for j, sh in enumerate(shells):
+                if sh.contains(hp.representative_point()):
+                    shells[j] = Polygon(sh.exterior.coords,
+                                        list(sh.interiors) + [hole])
+                    break
+        polys.extend(shells)
+    if not polys:
+        return None
+    geom = unary_union(polys)
+    if geom.geom_type == "Polygon":
+        geom = MultiPolygon([geom])
+    return geom
+
+
+def build_geometry():
+    """Fetch + de-overlap the 7 BAs, return {code: shapely geom} and write the topojson."""
+    need("shapely")
+    from shapely.geometry import mapping
+    from shapely.validation import make_valid
+
+    os.makedirs(DATA, exist_ok=True)
+
+    raw = {}
+    for code, where in BA_QUERY.items():
+        print("fetching %-6s ..." % code, end=" ", flush=True)
+        geom = esri_to_polygons(fetch_ba(where))
+        if geom is None or geom.is_empty:
+            sys.exit("no geometry for %s (check NAME filter / source URL)" % code)
+        raw[code] = make_valid(geom).buffer(0)
+        print("ok (%.1f sq-deg)" % raw[code].area)
+
+    clean, taken = {}, None
+    for code in PRIORITY:
+        g = raw[code]
+        if taken is not None:
+            g = g.difference(taken)
+        g = make_valid(g).buffer(0)
+        clean[code] = g
+        taken = g if taken is None else taken.union(g)
+
+    fc = {"type": "FeatureCollection", "features": [
+        {"type": "Feature", "id": code, "properties": {"iso": code},
+         "geometry": mapping(clean[code])}
+        for code in BA_QUERY
+    ]}
+    with tempfile.NamedTemporaryFile("w", suffix=".geojson", delete=False) as tf:
+        json.dump(fc, tf)
+        clean_path = tf.name
+    try:
+        subprocess.run([
+            "mapshaper", clean_path,
+            "-simplify", "6%", "weighted", "keep-shapes",
+            "-o", "format=topojson", "id-field=iso", "quantization=10000",
+            OUT_TOPO,
+        ], check=True)
+    except FileNotFoundError:
+        sys.exit("mapshaper not found. Install with: npm install -g mapshaper")
+    finally:
+        os.unlink(clean_path)
+
+    t = json.load(open(OUT_TOPO))
+    objs = t.get("objects", {})
+    if "iso" not in objs and len(objs) == 1:
+        t["objects"] = {"iso": next(iter(objs.values()))}
+        json.dump(t, open(OUT_TOPO, "w"))
+    print("wrote", os.path.relpath(OUT_TOPO))
+    return clean
+
+
+def topojson_features(topo, obj_key):
+    """Minimal TopoJSON -> GeoJSON feature decoder (Polygon/MultiPolygon)."""
+    arcs = topo["arcs"]
+    tr = topo.get("transform")
+
+    def dec(arc_idx):
+        rev = arc_idx < 0
+        a = arcs[~arc_idx] if rev else arcs[arc_idx]
+        pts, x, y = [], 0, 0
+        for p in a:
+            if tr:
+                x += p[0]; y += p[1]
+                pts.append([x * tr["scale"][0] + tr["translate"][0],
+                            y * tr["scale"][1] + tr["translate"][1]])
+            else:
+                pts.append(list(p))
+        return pts[::-1] if rev else pts
+
+    def ring(arc_list):
+        coords = []
+        for ai in arc_list:
+            seg = dec(ai)
+            coords.extend(seg if not coords else seg[1:])
+        return coords
+
+    def poly(rings):
+        return [ring(r) for r in rings]
+
+    feats = []
+    for g in topo["objects"][obj_key]["geometries"]:
+        gt = g["type"]
+        if gt == "Polygon":
+            geom = {"type": "Polygon", "coordinates": poly(g["arcs"])}
+        elif gt == "MultiPolygon":
+            geom = {"type": "MultiPolygon", "coordinates": [poly(p) for p in g["arcs"]]}
+        else:
+            continue
+        feats.append({"id": g.get("id"), "geometry": geom})
+    return feats
+
+
+def build_state_lookup(clean):
+    """Compute state -> [markets] by intersecting states with the clean BA geom."""
+    from shapely.geometry import shape
+    from shapely.validation import make_valid
+
+    states_topo = get_json(STATES_10M)
+    state_feats = topojson_features(states_topo, "states")
+
+    out = {}
+    for f in state_feats:
+        ab = FIPS2AB.get(str(f["id"]).zfill(2))
+        if not ab:
+            continue
+        g = make_valid(shape(f["geometry"])).buffer(0)
+        if g.is_empty or g.area == 0:
+            out[ab] = []
+            continue
+        hits = []
+        for code, mg in clean.items():
+            inter = g.intersection(mg)
+            if not inter.is_empty and inter.area / g.area >= STATE_SHARE_MIN:
+                hits.append((code, inter.area))
+        out[ab] = [c for c, _ in sorted(hits, key=lambda x: -x[1])]
+    json.dump(out, open(OUT_STATE, "w"))
+    print("wrote", os.path.relpath(OUT_STATE),
+          "(%d states, %d split across >1 market)" %
+          (len(out), sum(1 for v in out.values() if len(v) > 1)))
+
+
+def main():
+    clean = build_geometry()
+    build_state_lookup(clean)
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
