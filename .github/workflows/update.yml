@@ -1,0 +1,45 @@
+name: Weekly regulatory refresh
+
+# Refreshes regulatory_data.json (and drift_report.json) once a week and commits
+# the result only if something changed. index.html reads these files at load
+# time, so the published page updates automatically with no manual prompting.
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"        # Mondays 06:00 UTC
+  workflow_dispatch:            # allow a manual run from the Actions tab
+
+permissions:
+  contents: write               # needed to push the refreshed data file
+
+concurrency:
+  group: regulatory-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # The scraper uses only the standard library; nothing to install.
+      - name: Run regulatory scraper
+        run: python update_regulatory.py
+
+      - name: Commit changes if the data moved
+        run: |
+          git config user.name  "kh-nuclear-bot"
+          git config user.email "kh-nuclear-bot@users.noreply.github.com"
+          git add regulatory_data.json drift_report.json
+          if git diff --staged --quiet; then
+            echo "No regulatory changes this week."
+          else
+            git commit -m "Weekly regulatory refresh ($(date -u +%Y-%m-%d))"
+            git push
+          fi
