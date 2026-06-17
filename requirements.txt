@@ -1,0 +1,12 @@
+# --- Weekly auto-update (scripts/update_regulatory.py) ---
+# Uses only the Python standard library (urllib, json, re). No third-party
+# packages are required for the weekly GitHub Action, which keeps the job
+# fast and dependency-free.
+
+# --- Geometry rebuild only (scripts/build_iso_geometry.py) ---
+# These are needed ONLY if you regenerate data/iso_rto.topojson and
+# data/state_iso.json from the balancing-authority source. The weekly job
+# does NOT need them.
+shapely>=2.0
+# Also requires the Node toolchain for simplification:
+#   npm install -g mapshaper
