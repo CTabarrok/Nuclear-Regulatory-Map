@@ -1,5 +1,5 @@
 {
-  "checked": "2026-06-17 18:05 UTC",
+  "checked": "2026-06-22 12:17 UTC",
   "ok": true,
   "restriction_list": [
     "CA",
@@ -16,7 +16,7 @@
   "added": [],
   "removed": [],
   "notes": [
-    "NCSL cross-check unavailable (ncsl:wayback-unavailable:fetch failed for https://web.archive.org/web/20260420144640id_/https://www.ncsl.org/environment-and-natural-resources/states-restrictions-on-new-nuclear-power-facility-construction: HTTP Error 403: Forbidden) \u2014 proceeding on DOE + overrides.",
+    "NCSL cross-check unavailable (ncsl:wayback-unavailable:NCSL parse produced an implausible list (0 states)) \u2014 proceeding on DOE + overrides.",
     "No change to the restriction list since last run."
   ]
 }

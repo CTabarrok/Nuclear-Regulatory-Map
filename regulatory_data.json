@@ -1,6 +1,6 @@
 {
   "meta": {
-    "updated": "2026-06-17 18:05 UTC",
+    "updated": "2026-06-22 12:17 UTC",
     "restriction_list": [
       "CA",
       "CT",
@@ -21,7 +21,7 @@
       },
       "ncsl": {
         "url": "https://www.ncsl.org/environment-and-natural-resources/states-restrictions-on-new-nuclear-power-facility-construction",
-        "parse": "ncsl:wayback-unavailable:fetch failed for https://web.archive.org/web/20260420144640id_/https://www.ncsl.org/environment-and-natural-resources/states-restrictions-on-new-nuclear-power-facility-construction: HTTP Error 403: Forbidden",
+        "parse": "ncsl:wayback-unavailable:NCSL parse produced an implausible list (0 states)",
         "role": "cross-check (best-effort via Internet Archive)"
       }
     },
@@ -33,30 +33,40 @@
     "note": "Restriction list refreshed weekly from DOE (live) with an NCSL cross-check via the Internet Archive; mechanism wording, engagement notes and momentum flags come from manual_overrides.json."
   },
   "states": {
-    "MA": {
+    "HI": {
       "tier": "restricted",
-      "mech": "Statewide ballot + certification",
-      "note": "Requires statewide ballot approval plus legislative certification of a federally approved waste pathway and emergency plan."
-    },
-    "MN": {
-      "tier": "restricted",
-      "mech": "Outright construction ban",
-      "note": "1994 statutory ban on new reactor construction (Minn. Stat. 216B.243). Repeal bills (e.g. SF350) introduced 2025, in committee \u2014 watch for movement."
+      "mech": "2/3 legislative supermajority",
+      "note": "State constitution requires a two-thirds vote of both legislative houses to authorize a new nuclear facility."
     },
     "ME": {
       "tier": "restricted",
       "mech": "Statewide voter approval",
       "note": "Requires majority approval at statewide election plus PUC certification of an operational federal waste-disposal pathway."
     },
-    "CA": {
-      "tier": "restricted",
-      "mech": "Reprocessing / waste condition",
-      "note": "50-yr moratorium; bars new fission plants until a federal high-level waste reprocessing/disposal solution is approved."
-    },
     "OR": {
       "tier": "restricted",
       "mech": "Waste repository + statewide vote",
       "note": "Long-standing ban; requires an operational federal HLW repository and a statewide vote of approval."
+    },
+    "VT": {
+      "tier": "restricted",
+      "mech": "Legislative approval required",
+      "note": "New nuclear construction requires legislative approval."
+    },
+    "MA": {
+      "tier": "restricted",
+      "mech": "Statewide ballot + certification",
+      "note": "Requires statewide ballot approval plus legislative certification of a federally approved waste pathway and emergency plan."
+    },
+    "RI": {
+      "tier": "restricted",
+      "mech": "Legislative approval required",
+      "note": "Siting/construction of new nuclear facilities requires General Assembly approval (reaffirmed May 2025)."
+    },
+    "CA": {
+      "tier": "restricted",
+      "mech": "Reprocessing / waste condition",
+      "note": "50-yr moratorium; bars new fission plants until a federal high-level waste reprocessing/disposal solution is approved."
     },
     "NJ": {
       "tier": "clear",
@@ -65,30 +75,20 @@
       "recent": true,
       "effective": "2026-04-08"
     },
-    "RI": {
+    "MN": {
       "tier": "restricted",
-      "mech": "Legislative approval required",
-      "note": "Siting/construction of new nuclear facilities requires General Assembly approval (reaffirmed May 2025)."
-    },
-    "VT": {
-      "tier": "restricted",
-      "mech": "Legislative approval required",
-      "note": "New nuclear construction requires legislative approval."
-    },
-    "HI": {
-      "tier": "restricted",
-      "mech": "2/3 legislative supermajority",
-      "note": "State constitution requires a two-thirds vote of both legislative houses to authorize a new nuclear facility."
-    },
-    "NY": {
-      "tier": "partial",
-      "mech": "Geographic (Long Island)",
-      "note": "No statewide restriction. Moratorium applies only within the former LILCO service area \u2014 Nassau, Suffolk, and parts of Queens. Toggle County Detail to view."
+      "mech": "Outright construction ban",
+      "note": "1994 statutory ban on new reactor construction (Minn. Stat. 216B.243). Repeal bills (e.g. SF350) introduced 2025, in committee \u2014 watch for movement."
     },
     "CT": {
       "tier": "partial",
       "mech": "Site-specific exemption",
       "note": "Construction barred statewide EXCEPT the Millstone site (2022 exemption). 2025 Act 25-173 lets municipalities opt-in to advanced reactors by local vote."
+    },
+    "NY": {
+      "tier": "partial",
+      "mech": "Geographic (Long Island)",
+      "note": "No statewide restriction. Moratorium applies only within the former LILCO service area \u2014 Nassau, Suffolk, and parts of Queens. Toggle County Detail to view."
     },
     "IL": {
       "tier": "clear",
