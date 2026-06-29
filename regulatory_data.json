@@ -1,6 +1,6 @@
 {
   "meta": {
-    "updated": "2026-06-22 12:17 UTC",
+    "updated": "2026-06-29 11:12 UTC",
     "restriction_list": [
       "CA",
       "CT",
@@ -33,10 +33,17 @@
     "note": "Restriction list refreshed weekly from DOE (live) with an NCSL cross-check via the Internet Archive; mechanism wording, engagement notes and momentum flags come from manual_overrides.json."
   },
   "states": {
-    "HI": {
+    "MN": {
       "tier": "restricted",
-      "mech": "2/3 legislative supermajority",
-      "note": "State constitution requires a two-thirds vote of both legislative houses to authorize a new nuclear facility."
+      "mech": "Outright construction ban",
+      "note": "1994 statutory ban on new reactor construction (Minn. Stat. 216B.243). Repeal bills (e.g. SF350) introduced 2025, in committee \u2014 watch for movement."
+    },
+    "NJ": {
+      "tier": "clear",
+      "mech": "Repealed Apr 2026",
+      "note": "De facto CAFRA waste-disposal moratorium repealed Apr 8 2026 (S3870/A4528, P.L.2026 c.9). State Nuclear Task Force established under EO 2.",
+      "recent": true,
+      "effective": "2026-04-08"
     },
     "ME": {
       "tier": "restricted",
@@ -48,37 +55,30 @@
       "mech": "Waste repository + statewide vote",
       "note": "Long-standing ban; requires an operational federal HLW repository and a statewide vote of approval."
     },
+    "CA": {
+      "tier": "restricted",
+      "mech": "Reprocessing / waste condition",
+      "note": "50-yr moratorium; bars new fission plants until a federal high-level waste reprocessing/disposal solution is approved."
+    },
     "VT": {
       "tier": "restricted",
       "mech": "Legislative approval required",
       "note": "New nuclear construction requires legislative approval."
     },
-    "MA": {
+    "HI": {
       "tier": "restricted",
-      "mech": "Statewide ballot + certification",
-      "note": "Requires statewide ballot approval plus legislative certification of a federally approved waste pathway and emergency plan."
+      "mech": "2/3 legislative supermajority",
+      "note": "State constitution requires a two-thirds vote of both legislative houses to authorize a new nuclear facility."
     },
     "RI": {
       "tier": "restricted",
       "mech": "Legislative approval required",
       "note": "Siting/construction of new nuclear facilities requires General Assembly approval (reaffirmed May 2025)."
     },
-    "CA": {
+    "MA": {
       "tier": "restricted",
-      "mech": "Reprocessing / waste condition",
-      "note": "50-yr moratorium; bars new fission plants until a federal high-level waste reprocessing/disposal solution is approved."
-    },
-    "NJ": {
-      "tier": "clear",
-      "mech": "Repealed Apr 2026",
-      "note": "De facto CAFRA waste-disposal moratorium repealed Apr 8 2026 (S3870/A4528, P.L.2026 c.9). State Nuclear Task Force established under EO 2.",
-      "recent": true,
-      "effective": "2026-04-08"
-    },
-    "MN": {
-      "tier": "restricted",
-      "mech": "Outright construction ban",
-      "note": "1994 statutory ban on new reactor construction (Minn. Stat. 216B.243). Repeal bills (e.g. SF350) introduced 2025, in committee \u2014 watch for movement."
+      "mech": "Statewide ballot + certification",
+      "note": "Requires statewide ballot approval plus legislative certification of a federally approved waste pathway and emergency plan."
     },
     "CT": {
       "tier": "partial",
