@@ -1,0 +1,11 @@
+# ── Weekly auto-update (update_regulatory.py) ─────────────────────────────
+# Standard library only (urllib, json, re). No third-party packages, so the
+# weekly GitHub Action stays fast and dependency-free.
+
+# ── Build-time only: geometry + county signals ────────────────────────────
+# Needed ONLY when regenerating data files locally, never by the weekly job:
+#   build_iso_geometry.py    -> iso_rto.topojson, state_iso.json
+#   build_county_signals.py  -> county_data.json, county_names.json
+shapely>=2.0
+# build_iso_geometry.py also needs the Node toolchain for simplification:
+#   npm install -g mapshaper
