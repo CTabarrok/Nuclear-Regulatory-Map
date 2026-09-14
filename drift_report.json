@@ -1,5 +1,5 @@
 {
-  "checked": "2026-09-07 12:09 UTC",
+  "checked": "2026-09-14 12:25 UTC",
   "ok": true,
   "restriction_list": [
     "CA",
@@ -16,7 +16,7 @@
   "added": [],
   "removed": [],
   "notes": [
-    "NCSL cross-check unavailable (ncsl:wayback-unavailable:NCSL parse produced an implausible list (0 states)) \u2014 proceeding on DOE + overrides.",
+    "NCSL cross-check unavailable (ncsl:wayback-no-snapshot) \u2014 proceeding on DOE + overrides.",
     "No change to the restriction list since last run."
   ]
 }
